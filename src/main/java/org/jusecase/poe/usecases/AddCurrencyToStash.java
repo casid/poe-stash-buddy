@@ -24,12 +24,18 @@ public class AddCurrencyToStash {
 
     public void execute() {
         for (InventorySlot inventorySlot : inventorySlotGateway.getAll()) {
-            for (Currency currency : currencyGateway.getAll()) {
-                if (imageHashPlugin.isSimilar(inventorySlot.imageHash, currency.imageHash)) {
-                    inputPlugin.clickWithControlPressed(inventorySlot.x, inventorySlot.y);
-                    break;
-                }
+            if (isCurrencySlot(inventorySlot)) {
+                inputPlugin.clickWithControlPressed(inventorySlot.x, inventorySlot.y);
             }
         }
+    }
+
+    private boolean isCurrencySlot(InventorySlot inventorySlot) {
+        for (Currency currency : currencyGateway.getAll()) {
+            if (imageHashPlugin.isSimilar(inventorySlot.imageHash, currency.imageHash)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
