@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd ${SCRIPT_DIR}/../src/main/resources/currency
+
+#insert output of scrape-currency-items here:
+wget http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollMagic.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollSocketLinks.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyUpgradeToRare.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollRare.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyGemQuality.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyAddModToRare.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollSocketColours.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollSocketNumbers.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/EngineersOrb.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyUpgradeRandomly.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyMapQuality.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyConvertToNormal.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyImplicitMod.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyPassiveSkillRefund.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyUpgradeMagicToRare.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyModValues.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyVaal.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/AnnullOrb.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/BindingOrb.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/AncientOrb.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/HorizonOrb.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/HarbingerOrb.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyIdentification.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyPortal.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyArmourQuality.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyWeaponQuality.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyFlaskQuality.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyUpgradeToMagic.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyAddModToMagic.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyDuplicate.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyImprintOrb.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyCoin.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/SilverObol.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/AnnullShard.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/MirrorShard.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/ExaltedShard.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/BindingShard.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/HorizonShard.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/HarbingerShard.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/EngineersShard.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/AncientShard.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/ChaosShard.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/RegalShard.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/AtlasRadiusWhite.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/AtlasRadiusYellow.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/AtlasRadiusRed.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/Breach/BreachUpgraderFire.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/Breach/BreachUpgraderCold.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/Breach/BreachUpgraderLightning.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/Breach/BreachUpgraderPhysical.png
+wget http://web.poecdn.com/image/Art/2DItems/Currency/Breach/BreachUpgraderChaos.png
