@@ -47,9 +47,8 @@ public class CapturedInventorySlotGateway implements InventorySlotGateway {
             for (int y = 0; y < ROWS; ++y) {
                 if (!ignoredSlots.contains(x * ROWS + y)) {
                     InventorySlot slot = new InventorySlot();
-                    slot.imageHash = getHash(inventoryImage, slotX, slotY, slotWidth, slotHeight);
-                    slot.x = slotX + inventoryArea.x + slotCenterX;
-                    slot.y = slotY + inventoryArea.y + slotCenterY;
+                    slot.x = slotX;
+                    slot.y = slotY;
                     slots.add(slot);
                 }
 
@@ -58,6 +57,12 @@ public class CapturedInventorySlotGateway implements InventorySlotGateway {
             slotX += slotWidth + slotOffsetX;
             slotY = 0;
         }
+
+        slots.parallelStream().forEach(slot -> {
+            slot.imageHash = getHash(inventoryImage, slot.x, slot.y, slotWidth, slotHeight);
+            slot.x += inventoryArea.x + slotCenterX;
+            slot.y += inventoryArea.y + slotCenterY;
+        });
 
         return slots;
     }
