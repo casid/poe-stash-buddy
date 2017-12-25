@@ -23,11 +23,11 @@ public class AddCurrencyToStash {
     private ImageHashPlugin imageHashPlugin;
 
     public void execute() {
-        for (InventorySlot inventorySlot : inventorySlotGateway.getAll()) {
+        inventorySlotGateway.getAll(inventorySlot -> {
             if (isCurrencySlot(inventorySlot)) {
                 inputPlugin.clickWithControlPressed(inventorySlot.x, inventorySlot.y);
             }
-        }
+        });
     }
 
     private boolean isCurrencySlot(InventorySlot inventorySlot) {

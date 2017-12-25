@@ -5,20 +5,20 @@ import org.jusecase.poe.entities.InventorySlot;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.function.Consumer;
 
 public class InventorySlotGatewayTrainer implements InventorySlotGateway {
 
     private List<InventorySlot> inventorySlots = new ArrayList<>();
 
-    public void givenInventorySlots(InventorySlot ... inventorySlots) {
+    public void givenInventorySlots(InventorySlot... inventorySlots) {
         this.inventorySlots.clear();
         this.inventorySlots.addAll(Arrays.asList(inventorySlots));
     }
 
+
     @Override
-    public List<InventorySlot> getAll() {
-        return inventorySlots;
+    public void getAll(Consumer<InventorySlot> slotConsumer) {
+        inventorySlots.forEach(slotConsumer);
     }
 }

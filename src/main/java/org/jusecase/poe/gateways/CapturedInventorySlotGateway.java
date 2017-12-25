@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 @Component
 public class CapturedInventorySlotGateway implements InventorySlotGateway {
@@ -27,7 +28,7 @@ public class CapturedInventorySlotGateway implements InventorySlotGateway {
     private int slotOffsetY;
 
     @Override
-    public List<InventorySlot> getAll() {
+    public void getAll(Consumer<InventorySlot> slotConsumer) {
         BufferedImage inventoryImage = imageCapturePlugin.captureScreen(inventoryArea);
 
         int slotWidth = (inventoryArea.width - (slotOffsetX * (COLS - 1))) / COLS;
@@ -38,22 +39,19 @@ public class CapturedInventorySlotGateway implements InventorySlotGateway {
         int slotX = 0;
         int slotY = 0;
 
-        List<InventorySlot> slots = new ArrayList<>();
         for (int x = 0; x < COLS; ++x) {
             for (int y = 0; y < ROWS; ++y) {
                 InventorySlot slot = new InventorySlot();
                 slot.imageHash = getHash(inventoryImage, slotX, slotY, slotWidth, slotHeight);
                 slot.x = slotX + inventoryArea.x + slotCenterX;
                 slot.y = slotY + inventoryArea.y + slotCenterY;
-                slots.add(slot);
+                slotConsumer.accept(slot);
 
                 slotY += slotHeight + slotOffsetY;
             }
             slotX += slotWidth + slotOffsetX;
             slotY = 0;
         }
-
-        return slots;
     }
 
     private String getHash(BufferedImage inventoryImage, int slotX, int slotY, int slotWidth, int slotHeight) {
