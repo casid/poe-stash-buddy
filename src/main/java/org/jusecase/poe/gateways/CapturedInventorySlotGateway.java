@@ -11,8 +11,6 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO how to determine inventory area?
-
 @Component
 public class CapturedInventorySlotGateway implements InventorySlotGateway {
 
