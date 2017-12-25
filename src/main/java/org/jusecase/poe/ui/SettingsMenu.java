@@ -9,8 +9,13 @@ import org.jusecase.poe.usecases.SaveSettings;
 import javax.inject.Inject;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
+import static org.jusecase.poe.gateways.InventorySlotGateway.COLS;
+import static org.jusecase.poe.gateways.InventorySlotGateway.ROWS;
 
 @Component
 public class SettingsMenu extends Frame {
@@ -34,6 +39,8 @@ public class SettingsMenu extends Frame {
         settings = settingsGateway.getSettings();
         if (settings == null) {
             settings = new Settings();
+        } else {
+            settings = settings.clone();
         }
     }
 
@@ -57,23 +64,24 @@ public class SettingsMenu extends Frame {
 
         initInventoryArea();
         initSlotOffset();
+        initIgnoredSlots();
 
         add(fields);
-        SpringUtilities.makeCompactGrid(fields, 2, 2, 10, 10, 10, 10);
+        SpringUtilities.makeCompactGrid(fields, 3, 2, 10, 10, 10, 10);
     }
 
     private void initSlotOffset() {
-        Label label2 = new Label("Inventory offset", Label.RIGHT);
-        label2.setMaximumSize(new Dimension(label2.getMinimumSize().width, label2.getMinimumSize().height));
-        fields.add(label2);
+        Label label = new Label("Inventory offset", Label.RIGHT);
+        label.setMaximumSize(new Dimension(label.getMinimumSize().width, label.getMinimumSize().height));
+        fields.add(label);
 
-        Panel panel2 = new Panel(new FlowLayout(FlowLayout.LEFT));
+        Panel panel = new Panel(new FlowLayout(FlowLayout.LEFT));
         slotOffsetX = new TextField("" + settings.slotOffsetX, 5);
-        panel2.add(slotOffsetX);
+        panel.add(slotOffsetX);
         slotOffsetY = new TextField("" + settings.slotOffsetY, 5);
-        panel2.add(slotOffsetY);
-        panel2.setMaximumSize(new Dimension(panel2.getMaximumSize().width, panel2.getMinimumSize().height));
-        fields.add(panel2);
+        panel.add(slotOffsetY);
+        panel.setMaximumSize(new Dimension(panel.getMaximumSize().width, panel.getMinimumSize().height));
+        fields.add(panel);
     }
 
     private void initInventoryArea() {
@@ -92,6 +100,44 @@ public class SettingsMenu extends Frame {
         panel.add(inventoryAreaWidth);
         panel.setMaximumSize(new Dimension(panel.getMaximumSize().width, panel.getMinimumSize().height));
         fields.add(panel);
+    }
+
+    private void initIgnoredSlots() {
+        Label label = new Label("Ignored slots", Label.RIGHT);
+        label.setMaximumSize(new Dimension(label.getMinimumSize().width, label.getMinimumSize().height));
+        fields.add(label);
+
+        Panel panel = new Panel(new GridLayout(ROWS, COLS, 1, 1));
+        for (int x = 0; x < COLS; ++x) {
+            for (int y = 0; y < ROWS; ++y) {
+                final int slotIndex = x * ROWS + y;
+
+                Panel slot = new Panel();
+                slot.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        if (settings.ignoredSlots.contains(slotIndex)) {
+                            settings.ignoredSlots.remove(slotIndex);
+                        } else {
+                            settings.ignoredSlots.add(slotIndex);
+                        }
+                        updateSlotColor(slot, slotIndex);
+                    }
+                });
+
+                updateSlotColor(slot, slotIndex);
+                panel.add(slot);
+            }
+        }
+        fields.add(panel);
+    }
+
+    private void updateSlotColor(Panel slot, int slotIndex) {
+        if (settings.ignoredSlots.contains(slotIndex)) {
+            slot.setBackground(Color.RED);
+        } else {
+            slot.setBackground(Color.GREEN);
+        }
     }
 
     private void initButtons() {

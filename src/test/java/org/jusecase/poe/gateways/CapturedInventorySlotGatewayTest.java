@@ -7,18 +7,23 @@ import org.jusecase.inject.ComponentTest;
 import org.jusecase.inject.Trainer;
 import org.jusecase.poe.entities.Currency;
 import org.jusecase.poe.entities.InventorySlot;
+import org.jusecase.poe.entities.Settings;
 import org.jusecase.poe.plugins.ImageCapturePluginTrainer;
 import org.jusecase.poe.plugins.ImageHashPlugin;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.TreeSet;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class CapturedInventorySlotGatewayTest implements ComponentTest {
     @Trainer
     ImageCapturePluginTrainer imageCapturePluginTrainer;
+    @Trainer
+    SettingsGatewayTrainer settingsGatewayTrainer;
 
     ImageHashPlugin imageHashPlugin;
     CurrencyGateway currencyGateway;
@@ -49,6 +54,21 @@ class CapturedInventorySlotGatewayTest implements ComponentTest {
         s.assertThat(inventorySlots.get(1).y).isEqualTo(1051 + 3 + 102);
         s.assertThat(inventorySlots.get(5).x).isEqualTo(2051 + 3 + 102);
         s.assertThat(inventorySlots.get(5).y).isEqualTo(1051);
+        s.assertAll();
+    }
+
+    @Test
+    void allSlots_ignored() {
+        Settings settings = new Settings();
+        settings.ignoredSlots = new TreeSet<>(Arrays.asList(0, 1));
+        settingsGatewayTrainer.givenSettings(settings);
+
+        whenGetAllInventorySlots();
+
+        SoftAssertions s = new SoftAssertions();
+        s.assertThat(inventorySlots).hasSize(5 * 12 - 2);
+        s.assertThat(inventorySlots.get(5 - 2).x).isEqualTo(2051 + 3 + 102);
+        s.assertThat(inventorySlots.get(5 - 2).y).isEqualTo(1051);
         s.assertAll();
     }
 
