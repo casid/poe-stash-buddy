@@ -17,7 +17,7 @@ public class InventorySlotBuilder implements Builder<InventorySlot>, InventorySl
     }
 
     public InventorySlotBuilder noCurrency() {
-        entity.imageHash = TestHash.createHash("noCurrency", distanceToOriginal);
+        entity.imageHash = TestHash.createHash("noCurrencyWillMatchThisHash", distanceToOriginal);
         return this;
     }
 
