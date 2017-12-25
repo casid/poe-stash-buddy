@@ -9,9 +9,10 @@ import org.jusecase.poe.plugins.ImageHashPlugin;
 import javax.inject.Inject;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
 
 @Component
 public class CapturedInventorySlotGateway implements InventorySlotGateway {
@@ -28,7 +29,7 @@ public class CapturedInventorySlotGateway implements InventorySlotGateway {
     private int slotOffsetY;
 
     @Override
-    public void getAll(Consumer<InventorySlot> slotConsumer) {
+    public java.util.List<InventorySlot> getAll() {
         BufferedImage inventoryImage = imageCapturePlugin.captureScreen(inventoryArea);
 
         Set<Integer> ignoredSlots = getIgnoredSlots();
@@ -41,6 +42,7 @@ public class CapturedInventorySlotGateway implements InventorySlotGateway {
         int slotX = 0;
         int slotY = 0;
 
+        List<InventorySlot> slots = new ArrayList<>();
         for (int x = 0; x < COLS; ++x) {
             for (int y = 0; y < ROWS; ++y) {
                 if (!ignoredSlots.contains(x * ROWS + y)) {
@@ -48,7 +50,7 @@ public class CapturedInventorySlotGateway implements InventorySlotGateway {
                     slot.imageHash = getHash(inventoryImage, slotX, slotY, slotWidth, slotHeight);
                     slot.x = slotX + inventoryArea.x + slotCenterX;
                     slot.y = slotY + inventoryArea.y + slotCenterY;
-                    slotConsumer.accept(slot);
+                    slots.add(slot);
                 }
 
                 slotY += slotHeight + slotOffsetY;
@@ -56,6 +58,8 @@ public class CapturedInventorySlotGateway implements InventorySlotGateway {
             slotX += slotWidth + slotOffsetX;
             slotY = 0;
         }
+
+        return slots;
     }
 
     private Set<Integer> getIgnoredSlots() {

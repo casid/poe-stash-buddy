@@ -2,11 +2,11 @@ package org.jusecase.poe.gateways;
 
 import org.jusecase.poe.entities.InventorySlot;
 
-import java.util.function.Consumer;
+import java.util.List;
 
 public interface InventorySlotGateway {
     int COLS = 12;
     int ROWS = 5;
 
-    void getAll(Consumer<InventorySlot> slotConsumer);
+    List<InventorySlot> getAll();
 }

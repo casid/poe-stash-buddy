@@ -12,7 +12,6 @@ import org.jusecase.poe.plugins.ImageCapturePluginTrainer;
 import org.jusecase.poe.plugins.ImageHashPlugin;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TreeSet;
@@ -114,7 +113,6 @@ class CapturedInventorySlotGatewayTest implements ComponentTest {
     }
 
     private void whenGetAllInventorySlots() {
-        inventorySlots = new ArrayList<>();
-        gateway.getAll(s -> inventorySlots.add(s));
+        inventorySlots = gateway.getAll();
     }
 }
