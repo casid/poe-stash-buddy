@@ -37,12 +37,12 @@ public class AddItemsToStash {
         for (ItemType itemType : ItemType.values()) {
             List<InventorySlot> slots = slotsByType.get(itemType);
             if (slots != null) {
-                insertSlots(itemType, slots);
+                addToStash(itemType, slots);
             }
         }
     }
 
-    private void insertSlots(ItemType itemType, List<InventorySlot> slots) {
+    private void addToStash(ItemType itemType, List<InventorySlot> slots) {
         Point point = getStashTabLocation(itemType);
         if (point != null) {
             inputPlugin.click(point.x, point.y);
