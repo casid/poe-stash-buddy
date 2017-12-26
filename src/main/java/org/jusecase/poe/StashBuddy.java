@@ -4,10 +4,7 @@ import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 import org.jusecase.inject.Component;
 import org.jusecase.inject.Injector;
-import org.jusecase.poe.gateways.CapturedInventorySlotGateway;
-import org.jusecase.poe.gateways.JsonSettingsGateway;
-import org.jusecase.poe.gateways.ResourceItemGateway;
-import org.jusecase.poe.gateways.SettingsGateway;
+import org.jusecase.poe.gateways.*;
 import org.jusecase.poe.plugins.ImageHashPlugin;
 import org.jusecase.poe.plugins.NativeHookPlugin;
 import org.jusecase.poe.plugins.RobotPlugin;
@@ -45,11 +42,18 @@ public class StashBuddy implements Runnable, NativeKeyListener {
     private NativeHookPlugin nativeHookPlugin;
     @Inject
     private SettingsGateway settingsGateway;
+    @Inject
+    private ItemGateway itemGateway;
 
     @Override
     public void run() {
         initUi();
         initHooks();
+        initItems();
+    }
+
+    private void initItems() {
+        itemGateway.getAll();
     }
 
     private void initHooks() {
