@@ -27,4 +27,12 @@ public class ItemBuilder implements Builder<Item>, ItemBuilderMethods<Item, Item
     public ItemBuilder card() {
         return withType(ItemType.CARD).withImageHash(TestHash.createHash("divinationCard"));
     }
+
+    public ItemBuilder map() {
+        return withType(ItemType.MAP).withImageHash(TestHash.createHash("Maze of the Minotaur"));
+    }
+
+    public ItemBuilder essence() {
+        return withType(ItemType.ESSENCE).withImageHash(TestHash.createHash("Essence of Hatred"));
+    }
 }

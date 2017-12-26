@@ -34,4 +34,14 @@ public class InventorySlotBuilder implements Builder<InventorySlot>, InventorySl
     public static InventorySlotBuilder inventorySlot() {
         return new InventorySlotBuilder();
     }
+
+    public InventorySlotBuilder map() {
+        entity.imageHash = TestHash.createHash("Maze of the Minotaur", distanceToOriginal);
+        return this;
+    }
+
+    public InventorySlotBuilder essence() {
+        entity.imageHash = TestHash.createHash("Essence of Hatred", distanceToOriginal);
+        return this;
+    }
 }

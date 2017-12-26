@@ -39,9 +39,13 @@ class AddItemsToStashTest implements ComponentTest {
         itemGatewayTrainer.givenItem(a(item().chaosOrb()));
         itemGatewayTrainer.givenItem(a(item().exaltedOrb()));
         itemGatewayTrainer.givenItem(a(item().card()));
+        itemGatewayTrainer.givenItem(a(item().map()));
+        itemGatewayTrainer.givenItem(a(item().essence()));
 
         settings.stashTabLocations.put(ItemType.CURRENCY, new Point(1, 2));
         settings.stashTabLocations.put(ItemType.CARD, new Point(3, 4));
+        settings.stashTabLocations.put(ItemType.ESSENCE, new Point(5, 6));
+        settings.stashTabLocations.put(ItemType.MAP, new Point(7, 8));
         settingsGatewayTrainer.givenSettings(settings);
 
         usecase = new AddItemsToStash();
@@ -135,6 +139,27 @@ class AddItemsToStashTest implements ComponentTest {
         whenItemsAreAddedToStash();
 
         inputPluginTrainer.thenNoClickWithControlPressed();
+    }
+
+    @Test
+    void towSlotsDetected_allTypes() {
+        inventorySlotGatewayTrainer.givenInventorySlots(
+                a(inventorySlot().card().withX(1).withY(1)),
+                a(inventorySlot().map().withX(2).withY(2)),
+                a(inventorySlot().chaosOrb().withX(3).withY(3)),
+                a(inventorySlot().essence().withX(4).withY(4))
+        );
+
+        whenItemsAreAddedToStash();
+
+        inputPluginTrainer.thenClicked(0, settings.stashTabLocations.get(ItemType.CURRENCY));
+        inputPluginTrainer.thenClickedWithControlPressedAt(0, 3, 3);
+        inputPluginTrainer.thenClicked(1, settings.stashTabLocations.get(ItemType.CARD));
+        inputPluginTrainer.thenClickedWithControlPressedAt(1, 1, 1);
+        inputPluginTrainer.thenClicked(2, settings.stashTabLocations.get(ItemType.ESSENCE));
+        inputPluginTrainer.thenClickedWithControlPressedAt(2, 4, 4);
+        inputPluginTrainer.thenClicked(3, settings.stashTabLocations.get(ItemType.MAP));
+        inputPluginTrainer.thenClickedWithControlPressedAt(3, 2, 2);
     }
 
     private void whenItemsAreAddedToStash() {
