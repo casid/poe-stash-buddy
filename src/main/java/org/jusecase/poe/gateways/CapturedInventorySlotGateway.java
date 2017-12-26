@@ -34,21 +34,21 @@ public class CapturedInventorySlotGateway implements InventorySlotGateway {
 
         Set<Integer> ignoredSlots = getIgnoredSlots();
 
-        int slotWidth = (inventoryArea.width - (slotOffsetX * (COLS - 1))) / COLS;
-        int slotHeight = (inventoryArea.height - (slotOffsetY * (ROWS - 1))) / ROWS;
+        double slotWidth = ((double)inventoryArea.width - (slotOffsetX * (COLS - 1))) / COLS;
+        double slotHeight = ((double)inventoryArea.height - (slotOffsetY * (ROWS - 1))) / ROWS;
         int slotCenterX = (int) Math.round(0.5 * slotWidth);
         int slotCenterY = (int) Math.round(0.5 * slotHeight);
 
-        int slotX = 0;
-        int slotY = 0;
+        double slotX = 0;
+        double slotY = 0;
 
         List<InventorySlot> slots = new ArrayList<>();
         for (int x = 0; x < COLS; ++x) {
             for (int y = 0; y < ROWS; ++y) {
                 if (!ignoredSlots.contains(x * ROWS + y)) {
                     InventorySlot slot = new InventorySlot();
-                    slot.x = slotX;
-                    slot.y = slotY;
+                    slot.x = (int)Math.round(slotX);
+                    slot.y = (int)Math.round(slotY);
                     slots.add(slot);
                 }
 
@@ -59,7 +59,7 @@ public class CapturedInventorySlotGateway implements InventorySlotGateway {
         }
 
         slots.parallelStream().forEach(slot -> {
-            slot.imageHash = getHash(inventoryImage, slot.x, slot.y, slotWidth, slotHeight);
+            slot.imageHash = getHash(inventoryImage, slot.x, slot.y, (int)slotWidth, (int)slotHeight);
             slot.x += inventoryArea.x + slotCenterX;
             slot.y += inventoryArea.y + slotCenterY;
         });

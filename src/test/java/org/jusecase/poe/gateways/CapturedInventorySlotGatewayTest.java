@@ -37,7 +37,7 @@ class CapturedInventorySlotGatewayTest implements ComponentTest {
         gateway = new CapturedInventorySlotGateway();
 
         imageCapturePluginTrainer.givenImage("inventory-4k-crop-exact.png");
-        gateway.setInventoryArea(new Rectangle(2000, 1000, 1260, 524));
+        gateway.setInventoryArea(new Rectangle(2000, 1000, 1260, 522));
         gateway.setSlotOffset(3, 3);
     }
 
@@ -84,6 +84,24 @@ class CapturedInventorySlotGatewayTest implements ComponentTest {
         thenSlotsContainCurrency(34, 40, false);
         thenSlotContainsCurrency(41, true);
         thenSlotsContainCurrency(42, 59, false);
+    }
+
+    @Test
+    void smallerResolution() {
+        imageCapturePluginTrainer.givenImage("inventory-2k-crop-exact.png");
+        gateway.setInventoryArea(new Rectangle(0, 0, 631, 261));
+        gateway.setSlotOffset(1, 1);
+
+        whenGetAllInventorySlots();
+
+        thenSlotsContainCurrency(0, 0, false);
+        thenSlotsContainCurrency(1, 1, true);
+        thenSlotsContainCurrency(2, 4, false);
+        thenSlotsContainCurrency(5, 7, true);
+        thenSlotsContainCurrency(8, 9, false);
+        thenSlotsContainCurrency(15, 15, true);
+        thenSlotsContainCurrency(16, 44, false);
+        thenSlotsContainCurrency(45, 45, true);
     }
 
     private void thenSlotsContainCurrency(int startIndex, int endIndex, boolean containsCurrency) {

@@ -28,6 +28,8 @@ class ImageHashPluginTest {
     static String chaosShardHash;
     static String chaosHash;
     static String alterationHash;
+    static String alchemyHash;
+    static String cardHash;
 
     @BeforeAll
     static void setUp() throws IOException {
@@ -42,6 +44,8 @@ class ImageHashPluginTest {
         hashes.add(chaosShardHash = plugin.getHash(a(inputStream().withResource("currency/ChaosShard.png"))));
         hashes.add(chaosHash = plugin.getHash(a(inputStream().withResource("currency/CurrencyRerollRare.png"))));
         hashes.add(alterationHash = plugin.getHash(a(inputStream().withResource("currency/CurrencyRerollMagic.png"))));
+        hashes.add(alchemyHash = plugin.getHash(a(inputStream().withResource("currency/CurrencyUpgradeToRare.png"))));
+        hashes.add(cardHash = plugin.getHash(a(inputStream().withResource("card/InventoryIcon.png"))));
     }
 
     @Test
@@ -57,6 +61,21 @@ class ImageHashPluginTest {
     @Test
     void similarity_alteration() throws IOException {
         thenImageIsOnlySimilarTo("inventory-4k-crop-alteration.png", alterationHash);
+    }
+
+    @Test
+    void similarity_card() throws IOException {
+        thenImageIsOnlySimilarTo("inventory-2k-crop-card.png", cardHash);
+    }
+
+    @Test
+    void similarity_ancient() throws IOException {
+        thenImageIsOnlySimilarTo("inventory-2k-crop-ancient.png", ancientHash);
+    }
+
+    @Test
+    void similarity_alchemy() throws IOException {
+        thenImageIsOnlySimilarTo("inventory-2k-crop-alchemy.png", alchemyHash);
     }
 
     @Test

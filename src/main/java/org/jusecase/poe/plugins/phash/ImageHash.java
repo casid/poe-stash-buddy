@@ -13,14 +13,24 @@ import java.io.InputStream;
  */
 public class ImageHash {
 
-    public final int size;
-    public final int smallerSize;
+    private final int size;
+    private final int smallerSize;
+    private final BufferedImage background;
 
     public ImageHash(int size, int smallerSize) {
         this.size = size;
         this.smallerSize = smallerSize;
+        this.background = loadBackground();
 
         initCoefficients();
+    }
+
+    private BufferedImage loadBackground() {
+        try {
+            return ImageIO.read(Thread.currentThread().getContextClassLoader().getResourceAsStream("item-slot-bg.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public int distance(String s1, String s2) {
@@ -90,7 +100,9 @@ public class ImageHash {
 
         for (int x = 0; x < smallerSize; x++) {
             for (int y = 0; y < smallerSize; y++) {
-                total += dctVals[x][y];
+                if (x != 0 || y != 0) {
+                    total += dctVals[x][y];
+                }
             }
         }
 
@@ -126,12 +138,12 @@ public class ImageHash {
         g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         if (image.getColorModel().hasAlpha()) {
-            g.setBackground(new Color(4, 4, 30));
-            g.clearRect(0, 0, width, height);
+            g.drawImage(background, 0, 0, width, height, null);
         }
 
         g.drawImage(image, 0, 0, width, height, null);
 
+        g.setBackground(new Color(4, 4, 30));
         g.clearRect(0, 0, width / 2, height / 2); // cut off text
 
         g.dispose();
