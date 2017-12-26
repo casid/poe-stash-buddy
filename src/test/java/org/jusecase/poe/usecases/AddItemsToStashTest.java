@@ -18,7 +18,7 @@ import static org.jusecase.Builders.a;
 import static org.jusecase.poe.entities.ItemBuilder.item;
 import static org.jusecase.poe.entities.InventorySlotBuilder.inventorySlot;
 
-class AddItemToStashTest implements ComponentTest {
+class AddItemsToStashTest implements ComponentTest {
     @Trainer
     InventorySlotGatewayTrainer inventorySlotGatewayTrainer;
     @Trainer
