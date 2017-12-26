@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.jusecase.inject.ComponentTest;
 import org.jusecase.inject.Trainer;
-import org.jusecase.poe.gateways.CurrencyGatewayTrainer;
+import org.jusecase.poe.gateways.ItemGatewayTrainer;
 import org.jusecase.poe.gateways.InventorySlotGatewayTrainer;
 import org.jusecase.poe.plugins.ImageHashPlugin;
 import org.jusecase.poe.plugins.InputPluginTrainer;
@@ -13,22 +13,22 @@ import static org.jusecase.Builders.a;
 import static org.jusecase.poe.entities.CurrencyBuilder.currency;
 import static org.jusecase.poe.entities.InventorySlotBuilder.inventorySlot;
 
-class AddCurrencyToStashTest implements ComponentTest {
+class AddItemToStashTest implements ComponentTest {
     @Trainer
     InventorySlotGatewayTrainer inventorySlotGatewayTrainer;
     @Trainer
     InputPluginTrainer inputPluginTrainer;
     @Trainer
-    CurrencyGatewayTrainer currencyGatewayTrainer;
+    ItemGatewayTrainer currencyGatewayTrainer;
 
-    AddCurrencyToStash usecase;
+    AddItemsToStash usecase;
 
     @BeforeEach
     void setUp() {
         givenDependency(new ImageHashPlugin());
         currencyGatewayTrainer.givenCurrency(a(currency().chaosOrb()));
         currencyGatewayTrainer.givenCurrency(a(currency().exaltedOrb()));
-        usecase = new AddCurrencyToStash();
+        usecase = new AddItemsToStash();
     }
 
     @Test

@@ -6,14 +6,14 @@ import org.jusecase.inject.Component;
 import org.jusecase.inject.Injector;
 import org.jusecase.poe.gateways.CapturedInventorySlotGateway;
 import org.jusecase.poe.gateways.JsonSettingsGateway;
-import org.jusecase.poe.gateways.ResourceCurrencyGateway;
+import org.jusecase.poe.gateways.ResourceItemGateway;
 import org.jusecase.poe.gateways.SettingsGateway;
 import org.jusecase.poe.plugins.ImageHashPlugin;
 import org.jusecase.poe.plugins.NativeHookPlugin;
 import org.jusecase.poe.plugins.RobotPlugin;
 import org.jusecase.poe.ui.SettingsMenu;
 import org.jusecase.poe.ui.TrayMenu;
-import org.jusecase.poe.usecases.AddCurrencyToStash;
+import org.jusecase.poe.usecases.AddItemsToStash;
 import org.jusecase.poe.usecases.ApplySettings;
 
 import javax.inject.Inject;
@@ -28,7 +28,7 @@ public class StashBuddy implements Runnable, NativeKeyListener {
         Injector injector = Injector.getInstance();
         injector.add(JsonSettingsGateway.class);
         injector.add(ImageHashPlugin.class);
-        injector.add(ResourceCurrencyGateway.class);
+        injector.add(ResourceItemGateway.class);
         injector.add(RobotPlugin.class);
         injector.add(NativeHookPlugin.class);
         injector.add(CapturedInventorySlotGateway.class);
@@ -79,7 +79,7 @@ public class StashBuddy implements Runnable, NativeKeyListener {
     public void nativeKeyPressed(NativeKeyEvent nativeKeyEvent) {
         int modifiers = nativeKeyEvent.getModifiers();
         if ((modifiers & CTRL_MASK) != 0 && (modifiers & SHIFT_MASK) != 0 && nativeKeyEvent.getKeyCode() == 46) {
-            new AddCurrencyToStash().execute();
+            new AddItemsToStash().execute();
         }
     }
 

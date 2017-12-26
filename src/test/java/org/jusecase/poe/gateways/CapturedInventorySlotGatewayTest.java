@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.jusecase.inject.ComponentTest;
 import org.jusecase.inject.Trainer;
-import org.jusecase.poe.entities.Currency;
+import org.jusecase.poe.entities.Item;
 import org.jusecase.poe.entities.InventorySlot;
 import org.jusecase.poe.entities.Settings;
 import org.jusecase.poe.plugins.ImageCapturePluginTrainer;
@@ -25,7 +25,7 @@ class CapturedInventorySlotGatewayTest implements ComponentTest {
     SettingsGatewayTrainer settingsGatewayTrainer;
 
     ImageHashPlugin imageHashPlugin;
-    CurrencyGateway currencyGateway;
+    ItemGateway itemGateway;
     CapturedInventorySlotGateway gateway;
 
     List<InventorySlot> inventorySlots;
@@ -33,7 +33,7 @@ class CapturedInventorySlotGatewayTest implements ComponentTest {
     @BeforeEach
     void setUp() {
         givenDependency(imageHashPlugin = new ImageHashPlugin());
-        givenDependency(currencyGateway = new ResourceCurrencyGateway());
+        givenDependency(itemGateway = new ResourceItemGateway());
         gateway = new CapturedInventorySlotGateway();
 
         imageCapturePluginTrainer.givenImage("inventory-4k-crop-exact.png");
@@ -94,19 +94,19 @@ class CapturedInventorySlotGatewayTest implements ComponentTest {
 
     private void thenSlotContainsCurrency(int index, boolean containsCurrency) {
         InventorySlot slot = inventorySlots.get(index);
-        Currency currency = getMatchingCurrency(slot);
+        Item item = getMatchingCurrency(slot);
 
         if (containsCurrency) {
-            assertThat(currency).isNotNull();
+            assertThat(item).isNotNull();
         } else {
-            assertThat(currency).isNull();
+            assertThat(item).isNull();
         }
     }
 
-    private Currency getMatchingCurrency(InventorySlot slot) {
-        for (Currency currency : currencyGateway.getAll()) {
-            if (imageHashPlugin.isSimilar(slot.imageHash, currency.imageHash)) {
-                return currency;
+    private Item getMatchingCurrency(InventorySlot slot) {
+        for (Item item : itemGateway.getAll()) {
+            if (imageHashPlugin.isSimilar(slot.imageHash, item.imageHash)) {
+                return item;
             }
         }
         return null;

@@ -2,12 +2,12 @@ package org.jusecase.poe.entities;
 
 import org.jusecase.builders.Builder;
 
-public class CurrencyBuilder implements Builder<Currency>, CurrencyBuilderMethods<Currency, CurrencyBuilder> {
+public class CurrencyBuilder implements Builder<Item>, CurrencyBuilderMethods<Item, CurrencyBuilder> {
 
-    private Currency entity = new Currency();
+    private Item entity = new Item();
 
     @Override
-    public Currency getEntity() {
+    public Item getEntity() {
         return entity;
     }
 

@@ -1,5 +1,5 @@
 package org.jusecase.poe.entities;
 
-public class Currency {
+public class Item {
     public String imageHash;
 }
