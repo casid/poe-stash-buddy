@@ -2,6 +2,7 @@ package org.jusecase.poe.ui;
 
 import layout.SpringUtilities;
 import org.jusecase.inject.Component;
+import org.jusecase.poe.entities.ItemType;
 import org.jusecase.poe.entities.Settings;
 import org.jusecase.poe.gateways.SettingsGateway;
 import org.jusecase.poe.usecases.SaveSettings;
@@ -11,8 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.util.EnumMap;
 
 import static org.jusecase.poe.gateways.InventorySlotGateway.COLS;
 import static org.jusecase.poe.gateways.InventorySlotGateway.ROWS;
@@ -32,6 +32,7 @@ public class SettingsMenu extends Frame {
     private TextField inventoryAreaWidth;
     private TextField slotOffsetX;
     private TextField slotOffsetY;
+    private EnumMap<ItemType, StashTabLocation> stashTabLocations = new EnumMap<>(ItemType.class);
 
     public SettingsMenu() throws HeadlessException {
         super("PoE Stash Buddy");
@@ -45,12 +46,6 @@ public class SettingsMenu extends Frame {
     }
 
     public void init() {
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent windowEvent) {
-                dispose();
-            }
-        });
-
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         initFields();
@@ -64,10 +59,11 @@ public class SettingsMenu extends Frame {
 
         initInventoryArea();
         initSlotOffset();
+        initStashTabLocations();
         initIgnoredSlots();
 
         add(fields);
-        SpringUtilities.makeCompactGrid(fields, 3, 2, 10, 10, 10, 10);
+        SpringUtilities.makeCompactGrid(fields, 3 + stashTabLocations.size(), 2, 10, 10, 10, 10);
     }
 
     private void initSlotOffset() {
@@ -82,6 +78,21 @@ public class SettingsMenu extends Frame {
         panel.add(slotOffsetY);
         panel.setMaximumSize(new Dimension(panel.getMaximumSize().width, panel.getMinimumSize().height));
         fields.add(panel);
+    }
+
+    private void initStashTabLocations() {
+        for (ItemType itemType : ItemType.values()) {
+            Label label = new Label(itemType.getTabName() + " tab", Label.RIGHT);
+            label.setMaximumSize(new Dimension(label.getMinimumSize().width, label.getMinimumSize().height));
+            fields.add(label);
+
+            StashTabLocation panel = new StashTabLocation(itemType);
+            panel.init();
+            stashTabLocations.put(itemType, panel);
+
+            panel.setMaximumSize(new Dimension(panel.getMaximumSize().width, panel.getMinimumSize().height));
+            fields.add(panel);
+        }
     }
 
     private void initInventoryArea() {
@@ -155,13 +166,77 @@ public class SettingsMenu extends Frame {
     }
 
     private void save() {
-        settings.inventoryAreaX = Integer.parseInt(inventoryAreaX.getText());
-        settings.inventoryAreaY = Integer.parseInt(inventoryAreaY.getText());
-        settings.inventoryAreaWidth = Integer.parseInt(inventoryAreaWidth.getText());
-        settings.inventoryAreaHeight = Integer.parseInt(inventoryAreaHeight.getText());
-        settings.slotOffsetX = Integer.parseInt(slotOffsetX.getText());
-        settings.slotOffsetY = Integer.parseInt(slotOffsetY.getText());
+        settings.inventoryAreaX = parseInt(inventoryAreaX);
+        settings.inventoryAreaY = parseInt(inventoryAreaY);
+        settings.inventoryAreaWidth = parseInt(inventoryAreaWidth);
+        settings.inventoryAreaHeight = parseInt(inventoryAreaHeight);
+        settings.slotOffsetX = parseInt(slotOffsetX);
+        settings.slotOffsetY = parseInt(slotOffsetY);
+        stashTabLocations.values().forEach(StashTabLocation::applyToSettings);
         new SaveSettings().execute(settings);
         dispose();
+    }
+
+    private int parseInt(TextField textField) {
+        try {
+            return Integer.parseInt(textField.getText());
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    private class StashTabLocation extends Panel {
+        ItemType type;
+        Checkbox enabled;
+        TextField x;
+        TextField y;
+
+        public StashTabLocation(ItemType type) {
+            this.type = type;
+        }
+
+        void init() {
+            setLayout(new FlowLayout(FlowLayout.LEFT));
+
+            enabled = new Checkbox();
+            enabled.addItemListener(l -> applyToSettings());
+            add(enabled);
+
+            x = new TextField(5);
+            add(x);
+
+            y = new TextField(5);
+            add(y);
+
+            update();
+        }
+
+        void update() {
+            Point location = settings.stashTabLocations.get(type);
+            if (location == null) {
+                enabled.setState(false);
+                x.setEnabled(false);
+                y.setEnabled(false);
+                x.setText("0");
+                y.setText("0");
+            } else {
+                enabled.setState(true);
+                x.setEnabled(true);
+                y.setEnabled(true);
+                x.setText("" + location.x);
+                y.setText("" + location.y);
+            }
+        }
+
+        void applyToSettings() {
+            if (enabled.getState()) {
+                Point point = settings.stashTabLocations.computeIfAbsent(type, t -> new Point());
+                point.x = parseInt(x);
+                point.y = parseInt(y);
+            } else {
+                settings.stashTabLocations.remove(type);
+            }
+            update();
+        }
     }
 }

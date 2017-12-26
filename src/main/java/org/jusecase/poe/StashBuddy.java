@@ -18,11 +18,16 @@ import org.jusecase.poe.usecases.ApplySettings;
 
 import javax.inject.Inject;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 import static org.jnativehook.NativeInputEvent.CTRL_MASK;
 import static org.jnativehook.NativeInputEvent.SHIFT_MASK;
 
 @Component
 public class StashBuddy implements Runnable, NativeKeyListener {
+
+    private SettingsMenu settingsMenu;
 
     public static void main(String[] args) throws Exception {
         Injector injector = Injector.getInstance();
@@ -66,9 +71,19 @@ public class StashBuddy implements Runnable, NativeKeyListener {
     }
 
     public void showSettings() {
-        SettingsMenu settingsMenu = new SettingsMenu();
-        settingsMenu.init();
-        settingsMenu.setVisible(true);
+        if (settingsMenu == null) {
+            settingsMenu = new SettingsMenu();
+            settingsMenu.init();
+            settingsMenu.addWindowListener(new WindowAdapter() {
+                public void windowClosing(WindowEvent windowEvent) {
+                    settingsMenu.dispose();
+                    settingsMenu = null;
+                }
+            });
+            settingsMenu.setVisible(true);
+        } else {
+            settingsMenu.requestFocus();
+        }
     }
 
     @Override
