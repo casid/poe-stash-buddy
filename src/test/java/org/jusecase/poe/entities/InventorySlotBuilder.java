@@ -26,6 +26,11 @@ public class InventorySlotBuilder implements Builder<InventorySlot>, InventorySl
         return this;
     }
 
+    public InventorySlotBuilder card() {
+        entity.imageHash = TestHash.createHash("divinationCard", distanceToOriginal);
+        return this;
+    }
+
     public static InventorySlotBuilder inventorySlot() {
         return new InventorySlotBuilder();
     }

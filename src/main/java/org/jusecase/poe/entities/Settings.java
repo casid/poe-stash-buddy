@@ -1,5 +1,7 @@
 package org.jusecase.poe.entities;
 
+import java.awt.*;
+import java.util.EnumMap;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -11,6 +13,7 @@ public class Settings implements Cloneable {
     public int slotOffsetX;
     public int slotOffsetY;
     public SortedSet<Integer> ignoredSlots = new TreeSet<>();
+    public EnumMap<ItemType, Point> stashTabLocations = new EnumMap<>(ItemType.class);
 
     @Override
     public Settings clone() {

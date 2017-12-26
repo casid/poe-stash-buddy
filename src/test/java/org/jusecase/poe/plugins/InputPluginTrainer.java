@@ -9,6 +9,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class InputPluginTrainer implements InputPlugin {
 
     private List<Point> clicksWithControlPressed = new ArrayList<>();
+    private List<Point> clicks = new ArrayList<>();
+
+    @Override
+    public void click(int x, int y) {
+        clicks.add(new Point(x, y));
+    }
 
     @Override
     public void clickWithControlPressed(int x, int y) {
@@ -32,5 +38,9 @@ public class InputPluginTrainer implements InputPlugin {
         Point click = clicksWithControlPressed.get(clickIndex);
         assertThat(click.x).isEqualTo(x);
         assertThat(click.y).isEqualTo(y);
+    }
+
+    public void thenClicked(int clickIndex, Point point) {
+        assertThat(clicks.get(clickIndex)).isEqualTo(point);
     }
 }

@@ -17,6 +17,13 @@ public class RobotPlugin implements InputPlugin, ImageCapturePlugin {
     }
 
     @Override
+    public void click(int x, int y) {
+        robot.mouseMove(x, y);
+        robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+    }
+
+    @Override
     public void clickWithControlPressed(int x, int y) {
         robot.mouseMove(x, y);
         robot.keyPress(KeyEvent.VK_CONTROL);

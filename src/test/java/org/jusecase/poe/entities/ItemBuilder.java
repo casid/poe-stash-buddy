@@ -1,5 +1,6 @@
 package org.jusecase.poe.entities;
 
+import org.junit.jupiter.api.Test;
 import org.jusecase.builders.Builder;
 
 public class ItemBuilder implements Builder<Item>, ItemBuilderMethods<Item, ItemBuilder> {
@@ -21,5 +22,9 @@ public class ItemBuilder implements Builder<Item>, ItemBuilderMethods<Item, Item
 
     public static ItemBuilder item() {
         return new ItemBuilder();
+    }
+
+    public ItemBuilder card() {
+        return withType(ItemType.CARD).withImageHash(TestHash.createHash("divinationCard"));
     }
 }

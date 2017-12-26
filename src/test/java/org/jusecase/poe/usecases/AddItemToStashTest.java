@@ -4,10 +4,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.jusecase.inject.ComponentTest;
 import org.jusecase.inject.Trainer;
+import org.jusecase.poe.entities.ItemType;
+import org.jusecase.poe.entities.Settings;
 import org.jusecase.poe.gateways.ItemGatewayTrainer;
 import org.jusecase.poe.gateways.InventorySlotGatewayTrainer;
+import org.jusecase.poe.gateways.SettingsGatewayTrainer;
 import org.jusecase.poe.plugins.ImageHashPlugin;
 import org.jusecase.poe.plugins.InputPluginTrainer;
+
+import java.awt.*;
 
 import static org.jusecase.Builders.a;
 import static org.jusecase.poe.entities.ItemBuilder.item;
@@ -20,42 +25,53 @@ class AddItemToStashTest implements ComponentTest {
     InputPluginTrainer inputPluginTrainer;
     @Trainer
     ItemGatewayTrainer itemGatewayTrainer;
+    @Trainer
+    SettingsGatewayTrainer settingsGatewayTrainer;
+
+    Settings settings = new Settings();
 
     AddItemsToStash usecase;
 
     @BeforeEach
     void setUp() {
         givenDependency(new ImageHashPlugin());
+
         itemGatewayTrainer.givenItem(a(item().chaosOrb()));
         itemGatewayTrainer.givenItem(a(item().exaltedOrb()));
+        itemGatewayTrainer.givenItem(a(item().card()));
+
+        settings.stashTabLocations.put(ItemType.CURRENCY, new Point(1, 2));
+        settings.stashTabLocations.put(ItemType.CARD, new Point(3, 4));
+        settingsGatewayTrainer.givenSettings(settings);
+
         usecase = new AddItemsToStash();
     }
 
     @Test
     void noSlotsDetected() {
         inventorySlotGatewayTrainer.givenInventorySlots();
-        whenCurrencyIsAddedToStash();
+        whenItemsAreAddedToStash();
         inputPluginTrainer.thenNoClickWithControlPressed();
     }
 
     @Test
     void oneSlotDetected_perfectMatch() {
         inventorySlotGatewayTrainer.givenInventorySlots(a(inventorySlot().chaosOrb().withX(200).withY(100)));
-        whenCurrencyIsAddedToStash();
+        whenItemsAreAddedToStash();
         inputPluginTrainer.thenClickedWithControlPressedAt(200, 100);
     }
 
     @Test
     void oneSlotDetected_perfectMatch2() {
         inventorySlotGatewayTrainer.givenInventorySlots(a(inventorySlot().chaosOrb().withX(400).withY(500)));
-        whenCurrencyIsAddedToStash();
+        whenItemsAreAddedToStash();
         inputPluginTrainer.thenClickedWithControlPressedAt(400, 500);
     }
 
     @Test
     void oneSlotDetected_closeMatch() {
         inventorySlotGatewayTrainer.givenInventorySlots(a(inventorySlot().withDistanceToOriginal(5).chaosOrb()));
-        whenCurrencyIsAddedToStash();
+        whenItemsAreAddedToStash();
         inputPluginTrainer.thenClickedWithControlPressedCountIs(1);
     }
 
@@ -63,18 +79,65 @@ class AddItemToStashTest implements ComponentTest {
     void onlyClickOncePerSlot() {
         itemGatewayTrainer.givenItem(a(item().chaosOrb()));
         inventorySlotGatewayTrainer.givenInventorySlots(a(inventorySlot().chaosOrb()));
-        whenCurrencyIsAddedToStash();
+        whenItemsAreAddedToStash();
         inputPluginTrainer.thenClickedWithControlPressedCountIs(1);
     }
 
     @Test
     void oneSlotDetected_noCurrency() {
         inventorySlotGatewayTrainer.givenInventorySlots(a(inventorySlot().noCurrency()));
-        whenCurrencyIsAddedToStash();
+        whenItemsAreAddedToStash();
         inputPluginTrainer.thenNoClickWithControlPressed();
     }
 
-    private void whenCurrencyIsAddedToStash() {
+    @Test
+    void oneSlotDetected_card() {
+        inventorySlotGatewayTrainer.givenInventorySlots(a(inventorySlot().card().withX(200).withY(100)));
+        whenItemsAreAddedToStash();
+        inputPluginTrainer.thenClickedWithControlPressedAt(200, 100);
+    }
+
+    @Test
+    void towSlotsDetected_cardAndCurrency() {
+        inventorySlotGatewayTrainer.givenInventorySlots(
+                a(inventorySlot().card().withX(1).withY(1)),
+                a(inventorySlot().card().withX(2).withY(2)),
+                a(inventorySlot().chaosOrb().withX(3).withY(3))
+        );
+
+        whenItemsAreAddedToStash();
+
+        inputPluginTrainer.thenClicked(0, settings.stashTabLocations.get(ItemType.CURRENCY));
+        inputPluginTrainer.thenClickedWithControlPressedAt(0, 3, 3);
+        inputPluginTrainer.thenClicked(1, settings.stashTabLocations.get(ItemType.CARD));
+        inputPluginTrainer.thenClickedWithControlPressedAt(1, 1, 1);
+        inputPluginTrainer.thenClickedWithControlPressedAt(2, 2, 2);
+    }
+
+    @Test
+    void towSlotsDetected_cardAndCurrency_noStashTabLocationForCards() {
+        inventorySlotGatewayTrainer.givenInventorySlots(
+                a(inventorySlot().card().withX(1).withY(1)),
+                a(inventorySlot().chaosOrb().withX(2).withY(2))
+        );
+        settings.stashTabLocations.remove(ItemType.CARD);
+
+        whenItemsAreAddedToStash();
+        inputPluginTrainer.thenClicked(0, settings.stashTabLocations.get(ItemType.CURRENCY));
+        inputPluginTrainer.thenClickedWithControlPressedAt(0, 2, 2);
+    }
+
+    @Test
+    void nullSettings() {
+        settingsGatewayTrainer.givenSettings(null);
+        inventorySlotGatewayTrainer.givenInventorySlots(a(inventorySlot().card().withX(200).withY(100)));
+
+        whenItemsAreAddedToStash();
+
+        inputPluginTrainer.thenNoClickWithControlPressed();
+    }
+
+    private void whenItemsAreAddedToStash() {
         usecase.execute();
     }
 }
