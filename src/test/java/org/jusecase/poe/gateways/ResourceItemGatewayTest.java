@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.jusecase.inject.ComponentTest;
 import org.jusecase.poe.entities.Item;
+import org.jusecase.poe.entities.ItemType;
 import org.jusecase.poe.plugins.ImageHashPlugin;
 
 import java.util.List;
@@ -23,7 +24,10 @@ class ResourceItemGatewayTest implements ComponentTest {
     void currenciesAreLoadedFromResources() {
         List<Item> currencies = gateway.getAll();
 
-        assertThat(currencies.size()).isEqualTo(51);
+        assertThat(currencies.size()).isEqualTo(51 + 1);
+        assertThat(currencies.get(0).type).isEqualTo(ItemType.CURRENCY);
         assertThat(currencies.get(0).imageHash).isEqualTo("001000100011111001101001110010100001101010110010100001111001111");
+
+        assertThat(currencies.get(51).type).isEqualTo(ItemType.CARD);
     }
 }

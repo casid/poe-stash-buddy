@@ -10,7 +10,7 @@ import org.jusecase.poe.plugins.ImageHashPlugin;
 import org.jusecase.poe.plugins.InputPluginTrainer;
 
 import static org.jusecase.Builders.a;
-import static org.jusecase.poe.entities.CurrencyBuilder.currency;
+import static org.jusecase.poe.entities.ItemBuilder.item;
 import static org.jusecase.poe.entities.InventorySlotBuilder.inventorySlot;
 
 class AddItemToStashTest implements ComponentTest {
@@ -19,15 +19,15 @@ class AddItemToStashTest implements ComponentTest {
     @Trainer
     InputPluginTrainer inputPluginTrainer;
     @Trainer
-    ItemGatewayTrainer currencyGatewayTrainer;
+    ItemGatewayTrainer itemGatewayTrainer;
 
     AddItemsToStash usecase;
 
     @BeforeEach
     void setUp() {
         givenDependency(new ImageHashPlugin());
-        currencyGatewayTrainer.givenCurrency(a(currency().chaosOrb()));
-        currencyGatewayTrainer.givenCurrency(a(currency().exaltedOrb()));
+        itemGatewayTrainer.givenItem(a(item().chaosOrb()));
+        itemGatewayTrainer.givenItem(a(item().exaltedOrb()));
         usecase = new AddItemsToStash();
     }
 
@@ -61,7 +61,7 @@ class AddItemToStashTest implements ComponentTest {
 
     @Test
     void onlyClickOncePerSlot() {
-        currencyGatewayTrainer.givenCurrency(a(currency().chaosOrb()));
+        itemGatewayTrainer.givenItem(a(item().chaosOrb()));
         inventorySlotGatewayTrainer.givenInventorySlots(a(inventorySlot().chaosOrb()));
         whenCurrencyIsAddedToStash();
         inputPluginTrainer.thenClickedWithControlPressedCountIs(1);

@@ -14,7 +14,7 @@ public class ItemGatewayTrainer implements ItemGateway {
         return items;
     }
 
-    public void givenCurrency(Item item) {
+    public void givenItem(Item item) {
         this.items.add(item);
     }
 }

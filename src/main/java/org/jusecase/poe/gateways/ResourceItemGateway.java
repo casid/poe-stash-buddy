@@ -2,6 +2,7 @@ package org.jusecase.poe.gateways;
 
 import org.jusecase.inject.Component;
 import org.jusecase.poe.entities.Item;
+import org.jusecase.poe.entities.ItemType;
 import org.jusecase.poe.plugins.ImageHashPlugin;
 import org.jusecase.poe.util.PathUtils;
 
@@ -32,20 +33,22 @@ public class ResourceItemGateway implements ItemGateway {
             Path root = PathUtils.fromResource("icon.png").getParent();
 
             List<Item> items = new ArrayList<>();
-            loadItems(root.resolve("currency"), items);
+            loadItems(root.resolve("currency"), ItemType.CURRENCY, items);
+            loadItems(root.resolve("card"), ItemType.CARD, items);
             return items;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void loadItems(Path directory, List<Item> items) throws IOException {
-        Files.walk(directory, 1).filter(p -> p.toString().endsWith(".png")).forEach(path -> items.add(loadItem(path)));
+    private void loadItems(Path directory, ItemType type, List<Item> items) throws IOException {
+        Files.walk(directory, 1).filter(p -> p.toString().endsWith(".png")).forEach(path -> items.add(loadItem(path, type)));
     }
 
-    private Item loadItem(Path path) {
+    private Item loadItem(Path path, ItemType type) {
         try {
             Item item = new Item();
+            item.type = type;
             item.imageHash = imageHashPlugin.getHash(Files.newInputStream(path));
             return item;
         } catch (IOException e) {
