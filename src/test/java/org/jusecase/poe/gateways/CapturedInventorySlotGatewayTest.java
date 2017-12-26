@@ -97,9 +97,9 @@ class CapturedInventorySlotGatewayTest implements ComponentTest {
         Item item = getMatchingCurrency(slot);
 
         if (containsCurrency) {
-            assertThat(item).isNotNull();
+            assertThat(item).describedAs("expecting item at slot " + index + " to contain currency").isNotNull();
         } else {
-            assertThat(item).isNull();
+            assertThat(item).describedAs("expecting item at slot " + index + " to contain no currency").isNull();
         }
     }
 

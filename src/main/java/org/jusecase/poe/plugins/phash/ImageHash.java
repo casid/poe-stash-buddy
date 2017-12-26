@@ -2,9 +2,7 @@ package org.jusecase.poe.plugins.phash;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorConvertOp;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -52,17 +50,21 @@ public class ImageHash {
                  */
         img = resize(img, size, size);
 
-                /* 2. Reduce color.
-                 * The image is reduced to a grayscale just to further simplify
-                 * the number of computations.
-                 */
-        img = grayscale(img);
+        return getHashForChannel(img, 0) + getHashForChannel(img, 1) + getHashForChannel(img, 2);
+    }
 
+    private String getHashForChannel(BufferedImage img, int channel) {
         double[][] vals = new double[size][size];
 
         for (int x = 0; x < img.getWidth(); x++) {
             for (int y = 0; y < img.getHeight(); y++) {
-                vals[x][y] = getBlue(img, x, y);
+                if (channel == 0) {
+                    vals[x][y] = getRed(img, x, y);
+                } else if (channel == 1) {
+                    vals[x][y] = getGreen(img, x, y);
+                } else {
+                    vals[x][y] = getBlue(img, x, y);
+                }
             }
         }
 
@@ -136,15 +138,16 @@ public class ImageHash {
         return resizedImage;
     }
 
-    private ColorConvertOp colorConvert = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
-
-    private BufferedImage grayscale(BufferedImage img) {
-        colorConvert.filter(img, img);
-        return img;
-    }
-
     private static int getBlue(BufferedImage img, int x, int y) {
         return (img.getRGB(x, y)) & 0xff;
+    }
+
+    private static int getRed(BufferedImage img, int x, int y) {
+        return (img.getRGB(x, y) >> 16) & 0xff;
+    }
+
+    private static int getGreen(BufferedImage img, int x, int y) {
+        return (img.getRGB(x, y) >> 8) & 0xff;
     }
 
     // DCT function stolen from http://stackoverflow.com/questions/4240490/problems-with-dct-and-idct-algorithm-in-java

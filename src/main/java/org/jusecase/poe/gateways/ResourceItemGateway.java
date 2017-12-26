@@ -36,6 +36,7 @@ public class ResourceItemGateway implements ItemGateway {
             loadItems(root.resolve("currency"), ItemType.CURRENCY, items);
             loadItems(root.resolve("card"), ItemType.CARD, items);
             loadItems(root.resolve("essence"), ItemType.ESSENCE, items);
+            loadItems(root.resolve("map"), ItemType.MAP, items);
             return items;
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -50,6 +51,7 @@ public class ResourceItemGateway implements ItemGateway {
         try {
             Item item = new Item();
             item.type = type;
+            item.image = path.getFileName().toString();
             item.imageHash = imageHashPlugin.getHash(Files.newInputStream(path));
             return item;
         } catch (IOException e) {
