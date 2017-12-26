@@ -37,7 +37,18 @@ public class ResourceItemGateway implements ItemGateway {
             loadItems(root.resolve("card"), ItemType.CARD, items);
             loadItems(root.resolve("essence"), ItemType.ESSENCE, items);
             loadItems(root.resolve("map"), ItemType.MAP, items);
+
+            items.parallelStream().forEach(this::calculateImageHash);
+
             return items;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void calculateImageHash(Item item) {
+        try {
+            item.imageHash = imageHashPlugin.getHash(Files.newInputStream(item.path));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -48,14 +59,10 @@ public class ResourceItemGateway implements ItemGateway {
     }
 
     private Item loadItem(Path path, ItemType type) {
-        try {
-            Item item = new Item();
-            item.type = type;
-            item.image = path.getFileName().toString();
-            item.imageHash = imageHashPlugin.getHash(Files.newInputStream(path));
-            return item;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        Item item = new Item();
+        item.type = type;
+        item.path = path;
+        item.image = path.getFileName().toString();
+        return item;
     }
 }
