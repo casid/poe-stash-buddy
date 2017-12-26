@@ -60,20 +60,18 @@ public class ImageHash {
                  */
         img = resize(img, size, size);
 
-        return getHashForChannel(img, 0) + getHashForChannel(img, 1) + getHashForChannel(img, 2);
-    }
-
-    private String getHashForChannel(BufferedImage img, int channel) {
         double[][] vals = new double[size][size];
 
         for (int x = 0; x < img.getWidth(); x++) {
             for (int y = 0; y < img.getHeight(); y++) {
-                if (channel == 0) {
-                    vals[x][y] = getRed(img, x, y);
-                } else if (channel == 1) {
-                    vals[x][y] = getGreen(img, x, y);
-                } else {
-                    vals[x][y] = getBlue(img, x, y);
+                for (int channel = 0; channel < 3; ++channel) {
+                    if (channel == 0) {
+                        vals[x][y] += 0.21 * getRed(img, x, y);
+                    } else if (channel == 1) {
+                        vals[x][y] += 0.72 * getGreen(img, x, y);
+                    } else {
+                        vals[x][y] += 0.07 * getBlue(img, x, y);
+                    }
                 }
             }
         }
@@ -136,7 +134,7 @@ public class ImageHash {
         Graphics2D g = resizedImage.createGraphics();
         g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         if (image.getColorModel().hasAlpha()) {
             g.drawImage(background, 0, 0, width, height, null);
         }

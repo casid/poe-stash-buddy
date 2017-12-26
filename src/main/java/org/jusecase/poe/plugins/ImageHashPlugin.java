@@ -10,7 +10,7 @@ public class ImageHashPlugin {
     private static final int SIZE = 32;
     private static final int SMALL_SIZE = 8;
 
-    public static final int HASH_LENGTH = 3 * SMALL_SIZE * SMALL_SIZE;
+    public static final int HASH_LENGTH = SMALL_SIZE * SMALL_SIZE;
 
     private ImageHash imageHash = new ImageHash(SIZE, SMALL_SIZE);
 
