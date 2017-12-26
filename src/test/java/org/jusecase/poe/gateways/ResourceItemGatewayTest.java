@@ -24,10 +24,10 @@ class ResourceItemGatewayTest implements ComponentTest {
     void currenciesAreLoadedFromResources() {
         List<Item> currencies = gateway.getAll();
 
-        assertThat(currencies.size()).isEqualTo(51 + 1);
-        assertThat(currencies.get(0).type).isEqualTo(ItemType.CURRENCY);
+        assertThat(currencies.size()).isEqualTo(51 + 1 + 104);
         assertThat(currencies.get(0).imageHash).isEqualTo("001000100011111001101001110010100001101010110010100001111001111");
-
+        assertThat(currencies.get(0).type).isEqualTo(ItemType.CURRENCY);
         assertThat(currencies.get(51).type).isEqualTo(ItemType.CARD);
+        assertThat(currencies.get(52).type).isEqualTo(ItemType.ESSENCE);
     }
 }

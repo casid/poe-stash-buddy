@@ -35,6 +35,7 @@ public class ResourceItemGateway implements ItemGateway {
             List<Item> items = new ArrayList<>();
             loadItems(root.resolve("currency"), ItemType.CURRENCY, items);
             loadItems(root.resolve("card"), ItemType.CARD, items);
+            loadItems(root.resolve("essence"), ItemType.ESSENCE, items);
             return items;
         } catch (IOException e) {
             throw new RuntimeException(e);
