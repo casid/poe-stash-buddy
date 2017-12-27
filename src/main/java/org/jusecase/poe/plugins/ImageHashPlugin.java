@@ -1,5 +1,6 @@
 package org.jusecase.poe.plugins;
 
+import org.jusecase.poe.entities.Hash;
 import org.jusecase.poe.plugins.phash.ImageHash;
 import sun.nio.ch.IOUtil;
 
@@ -16,16 +17,17 @@ public class ImageHashPlugin {
 
     private ImageHash imageHash = new ImageHash(SIZE, SMALL_SIZE);
 
-    public String getHash(InputStream inputStream) throws IOException {
+    public Hash getHash(InputStream inputStream) throws IOException {
         return imageHash.getHash(ImageIO.read(inputStream));
     }
 
-    public String getHash(BufferedImage image) throws IOException {
+    public Hash getHash(BufferedImage image) throws IOException {
         return imageHash.getHash(image);
     }
 
-    public boolean isSimilar(String hash1, String hash2) {
-        return getNormalizedDistance(hash1, hash2) < 0.1;
+    public boolean isSimilar(Hash hash1, Hash hash2) {
+        return getNormalizedDistance(hash1.features, hash2.features) < 0.18 &&
+               getNormalizedDistance(hash1.colors, hash2.colors) < 0.18;
     }
 
     public double getNormalizedDistance(String hash1, String hash2) {

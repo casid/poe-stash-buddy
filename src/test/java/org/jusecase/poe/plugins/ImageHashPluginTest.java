@@ -1,6 +1,8 @@
 package org.jusecase.poe.plugins;
 
+import org.assertj.core.description.Description;
 import org.junit.jupiter.api.Test;
+import org.jusecase.poe.entities.Hash;
 
 import java.io.IOException;
 
@@ -27,8 +29,23 @@ class ImageHashPluginTest {
     }
 
     @Test
+    void unsimilar_CurrencyDuplicate() throws IOException {
+        thenImagesAreSimilar("currency/CurrencyDuplicate.png", "essence/Torment6.png", false);
+    }
+
+    @Test
     void unsimilar_Sorrow7() throws IOException {
         thenImagesAreSimilar("essence/Sorrow7.png", "map/musicbox.png", false);
+    }
+
+    @Test
+    void unsimilar_CurrencyRerollRare() throws IOException {
+        thenImagesAreSimilar("currency/CurrencyRerollRare.png", "map/UndeadSiege.png", false);
+    }
+
+    @Test
+    void unsimilar_ExaltedShard() throws IOException {
+        thenImagesAreSimilar("currency/ExaltedShard.png", "map/CitySquare.png", false);
     }
 
     @Test
@@ -67,10 +84,20 @@ class ImageHashPluginTest {
     }
 
     private void thenImagesAreSimilar(String image1, String image2, boolean similar) throws IOException {
-        String hash1 = plugin.getHash(a(inputStream().withResource(image1)));
-        String hash2 = plugin.getHash(a(inputStream().withResource(image2)));
+        Hash hash1 = plugin.getHash(a(inputStream().withResource(image1)));
+        Hash hash2 = plugin.getHash(a(inputStream().withResource(image2)));
         assertThat(plugin.isSimilar(hash1, hash2))
-                .describedAs("Actual normalized distance is " + plugin.getNormalizedDistance(hash1, hash2) + " (absolute distance " + plugin.getDistance(hash1, hash2) + ")")
+                .describedAs(new Description() {
+                    @Override
+                    public String value() {
+                        return "Actual normalized distance is f:" + plugin.getNormalizedDistance(hash1.features, hash2.features) +
+                                ", c: " + plugin.getNormalizedDistance(hash1.colors, hash2.colors) +
+                                " (absolute distance f:" + plugin.getDistance(hash1.features, hash2.features) +
+                                " c:" + plugin.getDistance(hash1.colors, hash2.colors) + ")\n" +
+                                hash1.toString() + "\n" +
+                                hash2.toString();
+                    }
+                })
                 .isEqualTo(similar);
     }
 }

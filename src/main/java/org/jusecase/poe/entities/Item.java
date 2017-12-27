@@ -6,7 +6,7 @@ public class Item {
     public ItemType type;
     public Path path;
     public String image;
-    public String imageHash;
+    public Hash imageHash;
 
     @Override
     public String toString() {

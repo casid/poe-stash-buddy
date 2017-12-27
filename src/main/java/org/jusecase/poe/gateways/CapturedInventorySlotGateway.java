@@ -1,6 +1,7 @@
 package org.jusecase.poe.gateways;
 
 import org.jusecase.inject.Component;
+import org.jusecase.poe.entities.Hash;
 import org.jusecase.poe.entities.InventorySlot;
 import org.jusecase.poe.entities.Settings;
 import org.jusecase.poe.plugins.ImageCapturePlugin;
@@ -76,7 +77,7 @@ public class CapturedInventorySlotGateway implements InventorySlotGateway {
         return settings.ignoredSlots;
     }
 
-    private String getHash(BufferedImage inventoryImage, int slotX, int slotY, int slotWidth, int slotHeight) {
+    private Hash getHash(BufferedImage inventoryImage, int slotX, int slotY, int slotWidth, int slotHeight) {
         try {
             return imageHashPlugin.getHash(inventoryImage.getSubimage(slotX, slotY, slotWidth, slotHeight));
         } catch (Exception e) {

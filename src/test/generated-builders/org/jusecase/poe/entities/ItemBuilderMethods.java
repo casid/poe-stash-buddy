@@ -11,11 +11,6 @@ public interface ItemBuilderMethods<T extends Item, B extends Builder> extends B
 
     T getEntity();
 
-    default B withImageHash(String value) {
-        getEntity().imageHash = value;
-        return (B)this;
-    }
-
     default B withType(org.jusecase.poe.entities.ItemType value) {
         getEntity().type = value;
         return (B)this;

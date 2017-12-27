@@ -1,6 +1,5 @@
 package org.jusecase.poe.entities;
 
-import org.junit.jupiter.api.Test;
 import org.jusecase.builders.Builder;
 
 public class ItemBuilder implements Builder<Item>, ItemBuilderMethods<Item, ItemBuilder> {
@@ -34,5 +33,13 @@ public class ItemBuilder implements Builder<Item>, ItemBuilderMethods<Item, Item
 
     public ItemBuilder essence() {
         return withType(ItemType.ESSENCE).withImageHash(TestHash.createHash("Essence of Hatred"));
+    }
+
+    public ItemBuilder withImageHash(String value) {
+        Hash hash = new Hash();
+        hash.features = value;
+        hash.colors = value;
+        entity.imageHash = hash;
+        return this;
     }
 }

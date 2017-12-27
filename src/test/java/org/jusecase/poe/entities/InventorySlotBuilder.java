@@ -12,13 +12,11 @@ public class InventorySlotBuilder implements Builder<InventorySlot>, InventorySl
     }
 
     public InventorySlotBuilder chaosOrb() {
-        entity.imageHash = TestHash.createHash("chaosOrb", distanceToOriginal);
-        return this;
+        return withImageHash(TestHash.createHash("chaosOrb", distanceToOriginal));
     }
 
     public InventorySlotBuilder noCurrency() {
-        entity.imageHash = TestHash.createHash("noCurrencyWillMatchThisHash", distanceToOriginal);
-        return this;
+        return withImageHash(TestHash.createHash("noCurrencyWillMatchThisHash", distanceToOriginal));
     }
 
     public InventorySlotBuilder withDistanceToOriginal(int value) {
@@ -27,8 +25,7 @@ public class InventorySlotBuilder implements Builder<InventorySlot>, InventorySl
     }
 
     public InventorySlotBuilder card() {
-        entity.imageHash = TestHash.createHash("divinationCard", distanceToOriginal);
-        return this;
+        return withImageHash(TestHash.createHash("divinationCard", distanceToOriginal));
     }
 
     public static InventorySlotBuilder inventorySlot() {
@@ -36,12 +33,18 @@ public class InventorySlotBuilder implements Builder<InventorySlot>, InventorySl
     }
 
     public InventorySlotBuilder map() {
-        entity.imageHash = TestHash.createHash("Maze of the Minotaur", distanceToOriginal);
-        return this;
+        return withImageHash(TestHash.createHash("Maze of the Minotaur", distanceToOriginal));
     }
 
     public InventorySlotBuilder essence() {
-        entity.imageHash = TestHash.createHash("Essence of Hatred", distanceToOriginal);
+        return withImageHash(TestHash.createHash("Essence of Hatred", distanceToOriginal));
+    }
+
+    public InventorySlotBuilder withImageHash(String value) {
+        Hash hash = new Hash();
+        hash.features = value;
+        hash.colors = value;
+        entity.imageHash = hash;
         return this;
     }
 }

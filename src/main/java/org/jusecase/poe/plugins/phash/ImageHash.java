@@ -1,5 +1,7 @@
 package org.jusecase.poe.plugins.phash;
 
+import org.jusecase.poe.entities.Hash;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -43,16 +45,8 @@ public class ImageHash {
         return counter;
     }
 
-    // Returns a 'binary string' (like. 001010111011100010) which is easy to do a hamming distance on.
-    public String getHash(BufferedImage img) throws IOException {
+    public Hash getHash(BufferedImage img) throws IOException {
 
-
-                /* 1. Reduce size.
-                 * Like Average Hash, pHash starts with a small image.
-                 * However, the image is larger than 8x8; 32x32 is a good size.
-                 * This is really done to simplify the DCT computation and not
-                 * because it is needed to reduce the high frequencies.
-                 */
         img = resize(img, size, size);
 
         double[][] hsv = new double[size][size];
@@ -69,49 +63,30 @@ public class ImageHash {
 
                 Color.RGBtoHSB(r, g, b, hsb);
 
-                hsv[x][y] = hsb[0] * hsb[1];
+                hsv[x][y] = hsb[0] * hsb[1] * hsb[2];
                 bv[x][y] = hsb[2];
             }
         }
 
-        double[][] hsvDct = applyAverage(hsv);
+        double[][] hsvDct = applyDCT(hsv);
         double[][] bvDct = applyDCT(bv);
 
-        return getHash(hsvDct) + getHash(bvDct);
+        Hash hash = new Hash();
+        hash.features = getHash(bvDct);
+        hash.colors = getHash(hsvDct);
+        return  hash;
     }
 
-    private String getHash(double[][] dctVals) throws IOException {
-
-                /* 4. Reduce the DCT.
-                 * This is the magic step. While the DCT is 32x32, just keep the
-                 * top-left 8x8. Those represent the lowest frequencies in the
-                 * picture.
-                 */
-                /* 5. Compute the average value.
-                 * Like the Average Hash, compute the mean DCT value (using only
-                 * the 8x8 DCT low-frequency values and excluding the first term
-                 * since the DC coefficient can be significantly different from
-                 * the other values and will throw off the average).
-                 */
-        double avg = getAverage(dctVals);
-
-                /* 6. Further reduce the DCT.
-                 * This is the magic step. Set the 64 hash bits to 0 or 1
-                 * depending on whether each of the 64 DCT values is above or
-                 * below the average value. The result doesn't tell us the
-                 * actual low frequencies; it just tells us the very-rough
-                 * relative scale of the frequencies to the mean. The result
-                 * will not vary as long as the overall structure of the image
-                 * remains the same; this can survive gamma and color histogram
-                 * adjustments without a problem.
-                 */
+    private String getHash(double[][] values) throws IOException {
         StringBuilder hash = new StringBuilder();
 
+        double average = getAverage(values);
         for (int x = 0; x < smallerSize; x++) {
             for (int y = 0; y < smallerSize; y++) {
-                hash.append(dctVals[x][y] > avg ? "1" : "0");
+                hash.append(values[x][y] > average ? "1" : "0");
             }
         }
+
         return hash.toString();
     }
 
@@ -182,10 +157,10 @@ public class ImageHash {
         double[][] a = new double[smallerSize][smallerSize];
         for (int x = 0; x < smallerSize; ++x) {
             for (int y = 0; y < smallerSize; ++y) {
-                int fx = 4 * x;
-                int fy = 4 * y;
+                int fx = smallerSize + 2 * x;
+                int fy = smallerSize + 2 * y;
 
-                a[x][y] = 0.25 *(f[fx][fy] + f[fx+1][fy] + f[fx][fy+1] + f[fx+1][fy+1]);
+                a[x][y] = 0.25 * (f[fx][fy] + f[fx+1][fy] + f[fx][fy+1] + f[fx+1][fy+1]);
             }
         }
         return a;
