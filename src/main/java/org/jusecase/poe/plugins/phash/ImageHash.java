@@ -98,9 +98,7 @@ public class ImageHash {
 
         for (int x = 0; x < smallerSize; x++) {
             for (int y = 0; y < smallerSize; y++) {
-                if (x != 0 || y != 0) {
-                    total += dctVals[x][y];
-                }
+                total += dctVals[x][y];
             }
         }
 
@@ -120,9 +118,7 @@ public class ImageHash {
 
         for (int x = 0; x < smallerSize; x++) {
             for (int y = 0; y < smallerSize; y++) {
-                if (x != 0 || y != 0) {
-                    hash.append(dctVals[x][y] > avg ? "1" : "0");
-                }
+                hash.append(dctVals[x][y] > avg ? "1" : "0");
             }
         }
 
@@ -176,7 +172,7 @@ public class ImageHash {
     private double[][] applyDCT(double[][] f) {
         int N = size;
 
-        double[][] F = new double[N][N];
+        double[][] F = new double[smallerSize][smallerSize];
         for (int u = 0; u < smallerSize; u++) {
             for (int v = 0; v < smallerSize; v++) {
                 double sum = 0.0;
