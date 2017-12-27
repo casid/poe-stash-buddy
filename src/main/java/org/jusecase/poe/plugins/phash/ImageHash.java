@@ -43,11 +43,6 @@ public class ImageHash {
         return counter;
     }
 
-    public String getHash(InputStream is) throws IOException {
-        BufferedImage img = ImageIO.read(is);
-        return getHash(img);
-    }
-
     // Returns a 'binary string' (like. 001010111011100010) which is easy to do a hamming distance on.
     public String getHash(BufferedImage img) throws IOException {
 
@@ -60,28 +55,32 @@ public class ImageHash {
                  */
         img = resize(img, size, size);
 
-        double[][] vals = new double[size][size];
+        double[][] hsv = new double[size][size];
+        double[][] bv = new double[size][size];
+        float[] hsb = new float[3];
+        for (int x = 0; x < size; ++x) {
+            for (int y = 0; y < size; ++y) {
 
-        for (int x = 0; x < img.getWidth(); x++) {
-            for (int y = 0; y < img.getHeight(); y++) {
-                for (int channel = 0; channel < 3; ++channel) {
-                    if (channel == 0) {
-                        vals[x][y] += 0.21 * getRed(img, x, y);
-                    } else if (channel == 1) {
-                        vals[x][y] += 0.72 * getGreen(img, x, y);
-                    } else {
-                        vals[x][y] += 0.07 * getBlue(img, x, y);
-                    }
-                }
+                int rgb = img.getRGB(x, y);
+
+                int r = (rgb >> 16) & 0xff;
+                int g = (rgb >> 8) & 0xff;
+                int b = rgb & 0xff;
+
+                Color.RGBtoHSB(r, g, b, hsb);
+
+                hsv[x][y] = hsb[0] * hsb[1];
+                bv[x][y] = hsb[2];
             }
         }
 
-                /* 3. Compute the DCT.
-                 * The DCT separates the image into a collection of frequencies
-                 * and scalars. While JPEG uses an 8x8 DCT, this algorithm uses
-                 * a 32x32 DCT.
-                 */
-        double[][] dctVals = applyDCT(vals);
+        double[][] hsvDct = applyAverage(hsv);
+        double[][] bvDct = applyDCT(bv);
+
+        return getHash(hsvDct) + getHash(bvDct);
+    }
+
+    private String getHash(double[][] dctVals) throws IOException {
 
                 /* 4. Reduce the DCT.
                  * This is the magic step. While the DCT is 32x32, just keep the
@@ -94,15 +93,7 @@ public class ImageHash {
                  * since the DC coefficient can be significantly different from
                  * the other values and will throw off the average).
                  */
-        double total = 0;
-
-        for (int x = 0; x < smallerSize; x++) {
-            for (int y = 0; y < smallerSize; y++) {
-                total += dctVals[x][y];
-            }
-        }
-
-        double avg = total / (double) ((smallerSize * smallerSize) - 1);
+        double avg = getAverage(dctVals);
 
                 /* 6. Further reduce the DCT.
                  * This is the magic step. Set the 64 hash bits to 0 or 1
@@ -121,8 +112,38 @@ public class ImageHash {
                 hash.append(dctVals[x][y] > avg ? "1" : "0");
             }
         }
-
         return hash.toString();
+    }
+
+    private double getAverage(double[][] dctVals) {
+        double total = 0;
+
+        for (int x = 0; x < smallerSize; x++) {
+            for (int y = 0; y < smallerSize; y++) {
+                total += dctVals[x][y];
+            }
+        }
+
+        return total / (double) ((smallerSize * smallerSize) - 1);
+    }
+
+    private double getDifference(double[][] dctVals) {
+        double min = Double.MAX_VALUE;
+        double max = Double.MIN_VALUE;
+
+        for (int x = 0; x < smallerSize; x++) {
+            for (int y = 0; y < smallerSize; y++) {
+                double value = dctVals[x][y];
+                if (value < min) {
+                    min = value;
+                }
+                if (value > max) {
+                    max = value;
+                }
+            }
+        }
+
+        return Math.abs(max - min);
     }
 
     private BufferedImage resize(BufferedImage image, int width, int height) {
@@ -130,7 +151,7 @@ public class ImageHash {
         Graphics2D g = resizedImage.createGraphics();
         g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         if (image.getColorModel().hasAlpha()) {
             g.drawImage(background, 0, 0, width, height, null);
         }
@@ -142,18 +163,6 @@ public class ImageHash {
 
         g.dispose();
         return resizedImage;
-    }
-
-    private static int getBlue(BufferedImage img, int x, int y) {
-        return (img.getRGB(x, y)) & 0xff;
-    }
-
-    private static int getRed(BufferedImage img, int x, int y) {
-        return (img.getRGB(x, y) >> 16) & 0xff;
-    }
-
-    private static int getGreen(BufferedImage img, int x, int y) {
-        return (img.getRGB(x, y) >> 8) & 0xff;
     }
 
     // DCT function stolen from http://stackoverflow.com/questions/4240490/problems-with-dct-and-idct-algorithm-in-java
@@ -169,6 +178,19 @@ public class ImageHash {
         c[0] = 1 / Math.sqrt(2.0);
     }
 
+    private double[][] applyAverage(double[][] f) {
+        double[][] a = new double[smallerSize][smallerSize];
+        for (int x = 0; x < smallerSize; ++x) {
+            for (int y = 0; y < smallerSize; ++y) {
+                int fx = 4 * x;
+                int fy = 4 * y;
+
+                a[x][y] = 0.25 *(f[fx][fy] + f[fx+1][fy] + f[fx][fy+1] + f[fx+1][fy+1]);
+            }
+        }
+        return a;
+    }
+
     private double[][] applyDCT(double[][] f) {
         int N = size;
 
@@ -182,7 +204,7 @@ public class ImageHash {
                             sum += Math.cos(((2 * i + 1) / (2.0 * N)) * u * Math.PI) * Math.cos(((2 * j + 1) / (2.0 * N)) * v * Math.PI) * (f[i][j]);
                         }
                     }
-                    sum *= ((c[u] * c[v]) / 4.0);
+                    sum *= ((c[u] * c[v]) / N);
                 }
                 F[u][v] = sum;
             }

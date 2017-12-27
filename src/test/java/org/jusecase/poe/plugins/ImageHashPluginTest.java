@@ -1,109 +1,76 @@
 package org.jusecase.poe.plugins;
 
-
-import org.assertj.core.api.Assertions;
-import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jusecase.Builders.a;
 import static org.jusecase.Builders.inputStream;
 
-@SuppressWarnings("SameParameterValue")
 class ImageHashPluginTest {
-    static ImageHashPlugin plugin;
+    ImageHashPlugin plugin = new ImageHashPlugin();
 
-    static List<String> hashes;
+    @Test
+    void unsimilar_EngineersOrb() throws IOException {
+        thenImagesAreSimilar("currency/EngineersOrb.png", "map/WolfMap.png", false);
+    }
 
-    static String jewellersHash;
-    static String fusingHash;
-    static String chromaticHash;
-    static String regalHash;
-    static String ancientHash;
-    static String chaosShardHash;
-    static String chaosHash;
-    static String alterationHash;
-    static String alchemyHash;
-    static String cardHash;
+    @Test
+    void unsimilar_CurrencyRerollMagic() throws IOException {
+        thenImagesAreSimilar("currency/CurrencyRerollMagic.png", "essence/Rage7.png", false);
+    }
 
-    @BeforeAll
-    static void setUp() throws IOException {
-        plugin = new ImageHashPlugin();
+    @Test
+    void unsimilar_HarbingerShard() throws IOException {
+        thenImagesAreSimilar("currency/HarbingerShard.png", "essence/Rage7.png", false);
+    }
 
-        hashes = new ArrayList<>();
-        hashes.add(jewellersHash = plugin.getHash(a(inputStream().withResource("currency/CurrencyRerollSocketNumbers.png"))));
-        hashes.add(fusingHash = plugin.getHash(a(inputStream().withResource("currency/CurrencyRerollSocketLinks.png"))));
-        hashes.add(chromaticHash = plugin.getHash(a(inputStream().withResource("currency/CurrencyRerollSocketColours.png"))));
-        hashes.add(regalHash = plugin.getHash(a(inputStream().withResource("currency/CurrencyUpgradeMagicToRare.png"))));
-        hashes.add(ancientHash = plugin.getHash(a(inputStream().withResource("currency/AncientOrb.png"))));
-        hashes.add(chaosShardHash = plugin.getHash(a(inputStream().withResource("currency/ChaosShard.png"))));
-        hashes.add(chaosHash = plugin.getHash(a(inputStream().withResource("currency/CurrencyRerollRare.png"))));
-        hashes.add(alterationHash = plugin.getHash(a(inputStream().withResource("currency/CurrencyRerollMagic.png"))));
-        hashes.add(alchemyHash = plugin.getHash(a(inputStream().withResource("currency/CurrencyUpgradeToRare.png"))));
-        hashes.add(cardHash = plugin.getHash(a(inputStream().withResource("card/InventoryIcon.png"))));
+    @Test
+    void unsimilar_Sorrow7() throws IOException {
+        thenImagesAreSimilar("essence/Sorrow7.png", "map/musicbox.png", false);
     }
 
     @Test
     void similarity_jewellers() throws IOException {
-        thenImageIsOnlySimilarTo("inventory-4k-crop-jewellers.png", jewellersHash);
+        thenImagesAreSimilar("inventory-4k-crop-jewellers.png", "currency/CurrencyRerollSocketNumbers.png", true);
     }
 
     @Test
     void similarity_chromatic() throws IOException {
-        thenImageIsOnlySimilarTo("inventory-4k-crop-chromatic.png", chromaticHash);
+        thenImagesAreSimilar("inventory-4k-crop-chromatic.png", "currency/CurrencyRerollSocketColours.png", true);
     }
 
     @Test
     void similarity_alteration() throws IOException {
-        thenImageIsOnlySimilarTo("inventory-4k-crop-alteration.png", alterationHash);
+        thenImagesAreSimilar("inventory-4k-crop-alteration.png", "currency/CurrencyRerollMagic.png", true);
     }
 
     @Test
     void similarity_card() throws IOException {
-        thenImageIsOnlySimilarTo("inventory-2k-crop-card.png", cardHash);
+        thenImagesAreSimilar("inventory-2k-crop-card.png", "card/InventoryIcon.png", true);
     }
 
     @Test
     void similarity_ancient() throws IOException {
-        thenImageIsOnlySimilarTo("inventory-2k-crop-ancient.png", ancientHash);
+        thenImagesAreSimilar("inventory-2k-crop-ancient.png", "currency/AncientOrb.png", true);
+    }
+
+    @Test
+    void similarity_transmutation() throws IOException {
+        thenImagesAreSimilar("inventory-4k-crop-transmutation.png", "currency/CurrencyUpgradeToMagic.png", true);
     }
 
     @Test
     void similarity_alchemy() throws IOException {
-        thenImageIsOnlySimilarTo("inventory-2k-crop-alchemy.png", alchemyHash);
+        thenImagesAreSimilar("inventory-2k-crop-alchemy.png", "currency/CurrencyUpgradeToRare.png", true);
     }
 
-    @Test
-    void similarity_nothing() throws IOException {
-        thenImageIsSimilarToNoCurrency("inventory-4k-crop-nothing.png");
-    }
-
-    private void thenImageIsOnlySimilarTo(String imageResource, String expected) throws IOException {
-        SoftAssertions s = new SoftAssertions();
-
-        String imageResourceHash = plugin.getHash(a(inputStream().withResource(imageResource)));
-        for (String hash : hashes) {
-            s.assertThat(plugin.isSimilar(imageResourceHash, hash))
-                    .describedAs("Actual normalized distance is " + plugin.getNormalizedDistance(imageResourceHash, hash) + " (absolute distance " + plugin.getDistance(imageResourceHash, hash) + ")")
-                    .isEqualTo(hash.equals(expected));
-        }
-
-        s.assertAll();
-    }
-
-    private void thenImageIsSimilarToNoCurrency(String imageResource) throws IOException {
-        SoftAssertions s = new SoftAssertions();
-
-        String imageResourceHash = plugin.getHash(a(inputStream().withResource(imageResource)));
-        for (String hash : hashes) {
-            s.assertThat(plugin.isSimilar(imageResourceHash, hash)).isFalse();
-        }
-
-        s.assertAll();
+    private void thenImagesAreSimilar(String image1, String image2, boolean similar) throws IOException {
+        String hash1 = plugin.getHash(a(inputStream().withResource(image1)));
+        String hash2 = plugin.getHash(a(inputStream().withResource(image2)));
+        assertThat(plugin.isSimilar(hash1, hash2))
+                .describedAs("Actual normalized distance is " + plugin.getNormalizedDistance(hash1, hash2) + " (absolute distance " + plugin.getDistance(hash1, hash2) + ")")
+                .isEqualTo(similar);
     }
 }

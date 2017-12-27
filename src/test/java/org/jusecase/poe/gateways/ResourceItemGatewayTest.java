@@ -1,5 +1,6 @@
 package org.jusecase.poe.gateways;
 
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.jusecase.inject.ComponentTest;
@@ -36,12 +37,17 @@ class ResourceItemGatewayTest implements ComponentTest {
 
     @Test
     void noItemConflicts() {
-        for (Item item : gateway.getAll()) {
-            for (Item otherItem : gateway.getAll()) {
+        SoftAssertions s = new SoftAssertions();
+        List<Item> allItems = gateway.getAll();
+        for (int i = 0; i < allItems.size(); ++i) {
+            Item item = allItems.get(i);
+            for (int j = i + 1; j < allItems.size(); ++j) {
+                Item otherItem = allItems.get(j);
                 if (item.type != otherItem.type) {
-                    assertThat(imageHashPlugin.isSimilar(item.imageHash, otherItem.imageHash)).describedAs("expecting " + item + " not to be similar to item " + otherItem).isFalse();
+                    s.assertThat(imageHashPlugin.isSimilar(item.imageHash, otherItem.imageHash)).describedAs("expecting " + item + " not to be similar to item " + otherItem).isFalse();
                 }
             }
         }
+        s.assertAll();
     }
 }

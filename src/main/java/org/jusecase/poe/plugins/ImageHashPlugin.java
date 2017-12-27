@@ -1,7 +1,9 @@
 package org.jusecase.poe.plugins;
 
 import org.jusecase.poe.plugins.phash.ImageHash;
+import sun.nio.ch.IOUtil;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,7 +17,7 @@ public class ImageHashPlugin {
     private ImageHash imageHash = new ImageHash(SIZE, SMALL_SIZE);
 
     public String getHash(InputStream inputStream) throws IOException {
-        return imageHash.getHash(inputStream);
+        return imageHash.getHash(ImageIO.read(inputStream));
     }
 
     public String getHash(BufferedImage image) throws IOException {
@@ -23,12 +25,12 @@ public class ImageHashPlugin {
     }
 
     public boolean isSimilar(String hash1, String hash2) {
-        return getNormalizedDistance(hash1, hash2) < 0.12;
+        return getNormalizedDistance(hash1, hash2) < 0.1;
     }
 
     public double getNormalizedDistance(String hash1, String hash2) {
         double distance = getDistance(hash1, hash2);
-        return distance / HASH_LENGTH;
+        return distance / hash1.length();
     }
 
     public int getDistance(String hash1, String hash2) {
