@@ -6,7 +6,6 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.InputStream;
 
 /*
  * pHash-like image hash.
@@ -74,7 +73,7 @@ public class ImageHash {
         Hash hash = new Hash();
         hash.features = getHash(bvDct);
         hash.colors = getHash(hsvDct);
-        return  hash;
+        return hash;
     }
 
     private String getHash(double[][] values) throws IOException {
@@ -100,25 +99,6 @@ public class ImageHash {
         }
 
         return total / (double) ((smallerSize * smallerSize) - 1);
-    }
-
-    private double getDifference(double[][] dctVals) {
-        double min = Double.MAX_VALUE;
-        double max = Double.MIN_VALUE;
-
-        for (int x = 0; x < smallerSize; x++) {
-            for (int y = 0; y < smallerSize; y++) {
-                double value = dctVals[x][y];
-                if (value < min) {
-                    min = value;
-                }
-                if (value > max) {
-                    max = value;
-                }
-            }
-        }
-
-        return Math.abs(max - min);
     }
 
     private BufferedImage resize(BufferedImage image, int width, int height) {
@@ -151,19 +131,6 @@ public class ImageHash {
             c[i] = 1;
         }
         c[0] = 1 / Math.sqrt(2.0);
-    }
-
-    private double[][] applyAverage(double[][] f) {
-        double[][] a = new double[smallerSize][smallerSize];
-        for (int x = 0; x < smallerSize; ++x) {
-            for (int y = 0; y < smallerSize; ++y) {
-                int fx = smallerSize + 2 * x;
-                int fy = smallerSize + 2 * y;
-
-                a[x][y] = 0.25 * (f[fx][fy] + f[fx+1][fy] + f[fx][fy+1] + f[fx+1][fy+1]);
-            }
-        }
-        return a;
     }
 
     private double[][] applyDCT(double[][] f) {
