@@ -188,6 +188,12 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <excludes>
+                        <exclude>layout/**</exclude>
+                        <exclude>org/jusecase/poe/ui/**</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
 
         </plugins>
