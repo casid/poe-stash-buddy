@@ -18,7 +18,11 @@ public class ImageHashPlugin {
     private ImageHash imageHash = new ImageHash(SIZE, SMALL_SIZE);
 
     public Hash getHash(InputStream inputStream) throws IOException {
-        return imageHash.getHash(ImageIO.read(inputStream));
+        try {
+            return imageHash.getHash(ImageIO.read(inputStream));
+        } finally {
+            inputStream.close();
+        }
     }
 
     public Hash getHash(BufferedImage image) throws IOException {

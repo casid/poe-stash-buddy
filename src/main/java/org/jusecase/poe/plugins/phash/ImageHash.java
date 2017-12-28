@@ -6,6 +6,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 
 /*
  * pHash-like image hash.
@@ -28,8 +29,8 @@ public class ImageHash {
     }
 
     private BufferedImage loadBackground() {
-        try {
-            return ImageIO.read(Thread.currentThread().getContextClassLoader().getResourceAsStream("item-slot-bg.png"));
+        try(InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("item-slot-bg.png")) {
+            return ImageIO.read(inputStream);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
