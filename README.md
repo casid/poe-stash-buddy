@@ -7,10 +7,15 @@
 A little script to automatically insert currency into your stash. GGG plz add this as in-game feature つ ◕_◕ ༽つ
 
 
-## Getting started
+## Setup
 - start stash buddy
 - start PoE and go to your stash
 - take a screenshot
-- enter inventory area and offsets into the settings dialog
-- enter stash tab locations for currency types you want to insert
+  - extract inventory area and offsets into the settings dialog
+  - extract stash tab locations for currency types you want to insert
 - optional: ignore inventory slots you don't want to transfer (e.g. portal / wisdom scrolls)
+
+## Usage
+- start stash buddy
+- start PoE, collect loot and go to your stash
+- Press CTR + SHIFT + C to insert loot from inventory to stash
