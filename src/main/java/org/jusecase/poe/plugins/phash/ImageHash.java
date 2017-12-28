@@ -18,14 +18,20 @@ public class ImageHash {
     private final int size;
     private final int smallerSize;
     private final BufferedImage background;
+    private final BufferedImage backgroundOverlay;
 
     public ImageHash(int size, int smallerSize) {
         this.size = size;
         this.smallerSize = smallerSize;
         this.background = loadBackground();
+        this.backgroundOverlay = loadBackgroundOverlay();
 
         initCoefficients();
         initCosineLookup();
+    }
+
+    private BufferedImage loadBackgroundOverlay() {
+        return background.getSubimage(0, 0, background.getWidth() / 2, background.getHeight() / 2);
     }
 
     private BufferedImage loadBackground() {
@@ -115,8 +121,8 @@ public class ImageHash {
 
         g.drawImage(image, 0, 0, width, height, null);
 
-        g.setBackground(new Color(4, 4, 30));
-        g.clearRect(0, 0, width / 2, height / 2); // cut off text
+        // cut off text
+        g.drawImage(backgroundOverlay, 0, 0, backgroundOverlay.getWidth(), backgroundOverlay.getHeight(), null);
 
         g.dispose();
         return resizedImage;
