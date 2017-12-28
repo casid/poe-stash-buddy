@@ -13,7 +13,7 @@ A little script to automatically insert currency into your stash. GGG plz add th
 - take a screenshot
   - extract inventory area and offsets into the settings dialog
   - extract stash tab locations for currency types you want to insert
-- optional: ignore inventory slots you don't want to transfer (e.g. portal / wisdom scrolls)
+- optional: ignore inventory slots you don't want to transfer (e.g. the slots you keep portal / wisdom scrolls)
 
 ## Usage
 - start stash buddy
