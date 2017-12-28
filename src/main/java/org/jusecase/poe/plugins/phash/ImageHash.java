@@ -24,6 +24,7 @@ public class ImageHash {
         this.background = loadBackground();
 
         initCoefficients();
+        initCosineLookup();
     }
 
     private BufferedImage loadBackground() {
@@ -123,6 +124,7 @@ public class ImageHash {
     // DCT function stolen from http://stackoverflow.com/questions/4240490/problems-with-dct-and-idct-algorithm-in-java
 
     private double[] c;
+    private double[] cosineLookup;
 
     private void initCoefficients() {
         c = new double[size];
@@ -131,6 +133,15 @@ public class ImageHash {
             c[i] = 1;
         }
         c[0] = 1 / Math.sqrt(2.0);
+    }
+
+    private void initCosineLookup() {
+        cosineLookup = new double[size * smallerSize];
+        for (int i = 0; i < size; i++) {
+            for (int u = 0; u < smallerSize; u++) {
+                cosineLookup[i * smallerSize + u] = Math.cos(((2 * i + 1) / (2.0 * size)) * u * Math.PI);
+            }
+        }
     }
 
     private double[][] applyDCT(double[][] f) {
@@ -143,7 +154,7 @@ public class ImageHash {
                 if (u != 0 || v != 0) {
                     for (int i = 0; i < N; i++) {
                         for (int j = 0; j < N; j++) {
-                            sum += Math.cos(((2 * i + 1) / (2.0 * N)) * u * Math.PI) * Math.cos(((2 * j + 1) / (2.0 * N)) * v * Math.PI) * (f[i][j]);
+                            sum += cosineLookup[i * smallerSize + u] * cosineLookup[j * smallerSize + v] * f[i][j];
                         }
                     }
                     sum *= ((c[u] * c[v]) / N);
