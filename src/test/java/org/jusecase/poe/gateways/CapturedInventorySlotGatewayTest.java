@@ -99,7 +99,8 @@ class CapturedInventorySlotGatewayTest implements ComponentTest {
         thenSlotsContainCurrency(2, 4, false);
         thenSlotsContainCurrency(5, 7, true);
         thenSlotsContainCurrency(8, 9, false);
-        // TODO shards from 10-12 are not recognized
+        thenSlotsContainCurrency(10, 11, true);
+        // TODO shard at 12 is not recognized
         thenSlotsContainCurrency(13, 15, true);
         thenSlotsContainCurrency(16, 44, false);
         thenSlotsContainCurrency(45, 45, true);

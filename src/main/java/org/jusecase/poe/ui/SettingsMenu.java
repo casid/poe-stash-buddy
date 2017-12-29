@@ -28,8 +28,8 @@ public class SettingsMenu extends Frame {
     private Panel fields;
     private TextField inventoryAreaX;
     private TextField inventoryAreaY;
-    private TextField inventoryAreaHeight;
     private TextField inventoryAreaWidth;
+    private TextField inventoryAreaHeight;
     private TextField slotOffsetX;
     private TextField slotOffsetY;
     private EnumMap<ItemType, StashTabLocation> stashTabLocations = new EnumMap<>(ItemType.class);
@@ -105,10 +105,10 @@ public class SettingsMenu extends Frame {
         panel.add(inventoryAreaX);
         inventoryAreaY = new TextField("" + settings.inventoryAreaY, 5);
         panel.add(inventoryAreaY);
-        inventoryAreaHeight = new TextField("" + settings.inventoryAreaHeight, 5);
-        panel.add(inventoryAreaHeight);
         inventoryAreaWidth = new TextField("" + settings.inventoryAreaWidth, 5);
         panel.add(inventoryAreaWidth);
+        inventoryAreaHeight = new TextField("" + settings.inventoryAreaHeight, 5);
+        panel.add(inventoryAreaHeight);
         panel.setMaximumSize(new Dimension(panel.getMaximumSize().width, panel.getMinimumSize().height));
         fields.add(panel);
     }

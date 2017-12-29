@@ -74,6 +74,11 @@ class ImageHashPluginTest {
     }
 
     @Test
+    void similarity_alchshard() throws IOException {
+        thenImagesAreSimilar("inventory-2k-crop-alchshard.png", "currency/AlchemyShard.png", true);
+    }
+
+    @Test
     void similarity_transmutation() throws IOException {
         thenImagesAreSimilar("inventory-4k-crop-transmutation.png", "currency/CurrencyUpgradeToMagic.png", true);
     }

@@ -6,6 +6,8 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 public class RobotPlugin implements InputPlugin, ImageCapturePlugin {
+    private static final int DELAY = 50;
+
     private final Robot robot;
 
     public RobotPlugin() {
@@ -18,18 +20,29 @@ public class RobotPlugin implements InputPlugin, ImageCapturePlugin {
 
     @Override
     public void click(int x, int y) {
-        robot.mouseMove(x, y);
+        mouseMove(x, y);
+        robot.delay(DELAY);
         robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.delay(DELAY);
         robot.mouseRelease(InputEvent.BUTTON1_MASK);
     }
 
     @Override
     public void clickWithControlPressed(int x, int y) {
-        robot.mouseMove(x, y);
+        mouseMove(x, y);
+        robot.delay(DELAY);
         robot.keyPress(KeyEvent.VK_CONTROL);
         robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.delay(DELAY);
         robot.mouseRelease(InputEvent.BUTTON1_MASK);
         robot.keyRelease(KeyEvent.VK_CONTROL);
+    }
+
+    private void mouseMove(int x, int y) {
+        // shit, this is broken on windows.
+        for (int i = 0; i < 30; ++i) {
+            robot.mouseMove(x, y);
+        }
     }
 
     @Override

@@ -14,7 +14,6 @@ import org.jusecase.poe.usecases.AddItemsToStash;
 import org.jusecase.poe.usecases.ApplySettings;
 
 import javax.inject.Inject;
-
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -97,7 +96,7 @@ public class StashBuddy implements Runnable, NativeKeyListener {
     @Override
     public void nativeKeyPressed(NativeKeyEvent nativeKeyEvent) {
         int modifiers = nativeKeyEvent.getModifiers();
-        if ((modifiers & CTRL_MASK) != 0 && (modifiers & SHIFT_MASK) != 0 && nativeKeyEvent.getKeyCode() == 46) {
+        if ((modifiers & CTRL_MASK) != 0 && (modifiers & SHIFT_MASK) != 0 && nativeKeyEvent.getKeyCode() == NativeKeyEvent.VC_A) {
             new AddItemsToStash().execute();
         }
     }
