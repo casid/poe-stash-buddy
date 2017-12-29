@@ -40,7 +40,7 @@ public class RobotPlugin implements InputPlugin, ImageCapturePlugin {
 
     private void mouseMove(int x, int y) {
         // shit, this is broken on windows.
-        for (int i = 0; i < 30; ++i) {
+        for (int i = 0; i < 15; ++i) {
             robot.mouseMove(x, y);
         }
     }
