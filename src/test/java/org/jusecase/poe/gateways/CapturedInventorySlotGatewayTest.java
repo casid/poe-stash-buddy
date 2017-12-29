@@ -66,6 +66,8 @@ class CapturedInventorySlotGatewayTest implements ComponentTest {
 
         SoftAssertions s = new SoftAssertions();
         s.assertThat(inventorySlots).hasSize(5 * 12 - 2);
+        s.assertThat(inventorySlots.get(0).x).isEqualTo(2051);
+        s.assertThat(inventorySlots.get(0).y).isNotEqualTo(1051);
         s.assertThat(inventorySlots.get(5 - 2).x).isEqualTo(2051 + 3 + 102);
         s.assertThat(inventorySlots.get(5 - 2).y).isEqualTo(1051);
         s.assertAll();

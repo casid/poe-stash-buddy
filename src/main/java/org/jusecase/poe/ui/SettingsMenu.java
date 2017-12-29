@@ -119,8 +119,8 @@ public class SettingsMenu extends Frame {
         fields.add(label);
 
         Panel panel = new Panel(new GridLayout(ROWS, COLS, 1, 1));
-        for (int x = 0; x < COLS; ++x) {
-            for (int y = 0; y < ROWS; ++y) {
+        for (int y = 0; y < ROWS; ++y) {
+            for (int x = 0; x < COLS; ++x) {
                 final int slotIndex = x * ROWS + y;
 
                 Panel slot = new Panel();
