@@ -14,6 +14,7 @@ import org.jusecase.poe.usecases.AddItemsToStash;
 import org.jusecase.poe.usecases.ApplySettings;
 
 import javax.inject.Inject;
+import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -26,6 +27,15 @@ public class StashBuddy implements Runnable, NativeKeyListener {
     private SettingsMenu settingsMenu;
 
     public static void main(String[] args) throws Exception {
+        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
+            String message = e.getClass().getSimpleName() + " (" + e.getMessage() + ")";
+            if (e.getCause() != null) {
+                message += "\nCaused by " + e.getCause().getClass().getSimpleName() + " (" + e.getMessage() + ")";
+            }
+            JOptionPane.showConfirmDialog(null, message, "PoE Stash Buddy - Error", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
+        });
+
         Injector injector = Injector.getInstance();
         injector.add(JsonSettingsGateway.class);
         injector.add(ImageHashPlugin.class);
