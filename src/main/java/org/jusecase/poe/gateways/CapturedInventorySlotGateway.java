@@ -7,9 +7,13 @@ import org.jusecase.poe.entities.Settings;
 import org.jusecase.poe.plugins.ImageCapturePlugin;
 import org.jusecase.poe.plugins.ImageHashPlugin;
 
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

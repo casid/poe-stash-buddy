@@ -2,7 +2,6 @@ package org.jusecase.poe.plugins;
 
 import org.jusecase.poe.entities.Hash;
 import org.jusecase.poe.plugins.phash.ImageHash;
-import sun.nio.ch.IOUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

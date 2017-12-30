@@ -7,7 +7,7 @@ import org.jusecase.inject.Injector;
 import org.jusecase.poe.gateways.*;
 import org.jusecase.poe.plugins.ImageHashPlugin;
 import org.jusecase.poe.plugins.NativeHookPlugin;
-import org.jusecase.poe.plugins.RobotPlugin;
+import org.jusecase.poe.plugins.RobotImageCapturePlugin;
 import org.jusecase.poe.ui.SettingsMenu;
 import org.jusecase.poe.ui.TrayMenu;
 import org.jusecase.poe.usecases.AddItemsToStash;
@@ -40,7 +40,7 @@ public class StashBuddy implements Runnable, NativeKeyListener {
         injector.add(JsonSettingsGateway.class);
         injector.add(ImageHashPlugin.class);
         injector.add(ResourceItemGateway.class);
-        injector.add(RobotPlugin.class);
+        injector.add(RobotImageCapturePlugin.class);
         injector.add(NativeHookPlugin.class);
         injector.add(CapturedInventorySlotGateway.class);
 
