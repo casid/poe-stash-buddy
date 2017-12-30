@@ -12,6 +12,10 @@ public class InputPluginTrainer implements InputPlugin {
     private List<Point> clicks = new ArrayList<>();
 
     @Override
+    public void wait(int millis) {
+    }
+
+    @Override
     public void click(int x, int y) {
         clicks.add(new Point(x, y));
     }

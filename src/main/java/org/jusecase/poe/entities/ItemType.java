@@ -16,4 +16,13 @@ public enum ItemType {
         }
         return null;
     }
+
+    public int getTabDelayInMillis() {
+        switch (this) {
+            case MAP:
+                return 100;
+            default:
+                return 10;
+        }
+    }
 }

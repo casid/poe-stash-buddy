@@ -19,6 +19,11 @@ public class RobotPlugin implements InputPlugin, ImageCapturePlugin {
     }
 
     @Override
+    public void wait(int millis) {
+        robot.delay(millis);
+    }
+
+    @Override
     public void click(int x, int y) {
         mouseMove(x, y);
         robot.delay(DELAY);
