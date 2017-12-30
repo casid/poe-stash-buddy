@@ -8,10 +8,15 @@ import org.jusecase.poe.util.PathUtils;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.FileSystemNotFoundException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class ResourceItemGateway implements ItemGateway {
@@ -38,11 +43,29 @@ public class ResourceItemGateway implements ItemGateway {
             loadItems(root.resolve("essence"), ItemType.ESSENCE, items);
             loadItems(root.resolve("map"), ItemType.MAP, items);
 
+            if (items.isEmpty()) {
+                throw new IllegalStateException("no item resources found!");
+            }
+
             items.parallelStream().forEach(this::calculateImageHash);
 
             return items;
+        } catch( FileSystemNotFoundException e ) {
+            initFileSystem();
+            return loadItems();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to load items.", e);
+        }
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private void initFileSystem() {
+        Map<String, String> env = new HashMap<>();
+        env.put("create", "true");
+        try {
+            FileSystems.newFileSystem(Thread.currentThread().getContextClassLoader().getResource("icon.png").toURI(), env);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to init resource file system.", e);
         }
     }
 
@@ -50,7 +73,7 @@ public class ResourceItemGateway implements ItemGateway {
         try {
             item.imageHash = imageHashPlugin.getHash(Files.newInputStream(item.path));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to calculate perceptual hash for item " + item, e);
         }
     }
 
