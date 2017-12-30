@@ -7,13 +7,9 @@ import org.jusecase.poe.entities.Settings;
 import org.jusecase.poe.plugins.ImageCapturePlugin;
 import org.jusecase.poe.plugins.ImageHashPlugin;
 
-import javax.imageio.ImageIO;
 import javax.inject.Inject;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -39,8 +35,8 @@ public class CapturedInventorySlotGateway implements InventorySlotGateway {
 
         Set<Integer> ignoredSlots = getIgnoredSlots();
 
-        double slotWidth = ((double)inventoryArea.width - (slotOffsetX * (COLS - 1))) / COLS;
-        double slotHeight = ((double)inventoryArea.height - (slotOffsetY * (ROWS - 1))) / ROWS;
+        double slotWidth = ((double) inventoryArea.width - (slotOffsetX * (COLS - 1))) / COLS;
+        double slotHeight = ((double) inventoryArea.height - (slotOffsetY * (ROWS - 1))) / ROWS;
         int slotCenterX = (int) Math.round(0.5 * slotWidth);
         int slotCenterY = (int) Math.round(0.5 * slotHeight);
 
@@ -52,8 +48,8 @@ public class CapturedInventorySlotGateway implements InventorySlotGateway {
             for (int y = 0; y < ROWS; ++y) {
                 if (!ignoredSlots.contains(x * ROWS + y)) {
                     InventorySlot slot = new InventorySlot();
-                    slot.x = (int)Math.round(slotX);
-                    slot.y = (int)Math.round(slotY);
+                    slot.x = (int) Math.round(slotX);
+                    slot.y = (int) Math.round(slotY);
                     slots.add(slot);
                 }
 
@@ -64,7 +60,7 @@ public class CapturedInventorySlotGateway implements InventorySlotGateway {
         }
 
         slots.parallelStream().forEach(slot -> {
-            slot.imageHash = getHash(inventoryImage, slot.x, slot.y, (int)slotWidth, (int)slotHeight);
+            slot.imageHash = getHash(inventoryImage, slot.x, slot.y, (int) slotWidth, (int) slotHeight);
             slot.x += inventoryArea.x + slotCenterX;
             slot.y += inventoryArea.y + slotCenterY;
         });
