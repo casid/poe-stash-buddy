@@ -12,6 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
 import java.util.EnumMap;
 
 import static org.jusecase.poe.gateways.InventorySlotGateway.COLS;
@@ -154,18 +155,26 @@ public class SettingsMenu extends Frame {
     private void initButtons() {
         Panel controlPanel = new Panel(new FlowLayout(FlowLayout.LEFT));
 
+        Button apply = new Button("Apply");
+        apply.addActionListener(e -> apply());
+        controlPanel.add(apply);
+
         Button save = new Button("Save");
         save.addActionListener(e -> save());
         controlPanel.add(save);
 
         Button cancel = new Button("Cancel");
-        cancel.addActionListener(e -> dispose());
+        cancel.addActionListener(e -> close());
         controlPanel.add(cancel);
 
         add(controlPanel);
     }
 
-    private void save() {
+    private void close() {
+        dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+    }
+
+    private void apply() {
         settings.inventoryAreaX = parseInt(inventoryAreaX);
         settings.inventoryAreaY = parseInt(inventoryAreaY);
         settings.inventoryAreaWidth = parseInt(inventoryAreaWidth);
@@ -174,7 +183,11 @@ public class SettingsMenu extends Frame {
         settings.slotOffsetY = parseInt(slotOffsetY);
         stashTabLocations.values().forEach(StashTabLocation::applyToSettings);
         new SaveSettings().execute(settings);
-        dispose();
+    }
+
+    private void save() {
+        apply();
+        close();
     }
 
     private int parseInt(TextField textField) {
