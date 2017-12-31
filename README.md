@@ -6,7 +6,7 @@
 
 A little script to automatically insert currency into your stash. GGG plz add this as in-game feature つ ◕_◕ ༽つ
 
-![alt text](https://github.com/casid/poe-stash-buddy/raw/master/preview.gif "Preview")
+![Preview](https://github.com/casid/poe-stash-buddy/raw/master/preview.gif "Preview")
 
 ## Setup
 - start stash buddy
