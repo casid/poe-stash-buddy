@@ -11,7 +11,7 @@ A little script to automatically insert currency into your stash. GGG plz add th
 ## Usage
 - run poe-stash-buddy.exe
 - run PoE, collect loot and go to your stash
-- Press CTR + SHIFT + A to insert loot from inventory to stash
+- Press **CTR + SHIFT + A** to insert loot from inventory to stash
 
 ## Setup
 - Download the latest [release](https://github.com/casid/poe-stash-buddy/releases)
