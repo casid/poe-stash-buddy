@@ -255,7 +255,7 @@
                             </classPath>
                             <icon>icon.ico</icon>
                             <jre>
-                                <minVersion>1.9.0</minVersion>
+                                <path>.</path>
                             </jre>
                             <cmdLine>-Dsun.java2d.dpiaware=false</cmdLine>
                             <versionInfo>
