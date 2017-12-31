@@ -219,6 +219,9 @@
                     <excludes>
                         <exclude>layout/**</exclude>
                         <exclude>org/jusecase/poe/ui/**</exclude>
+                        <exclude>org/jusecase/poe/plugins/NativeHookPlugin</exclude>
+                        <exclude>org/jusecase/poe/plugins/RobotImageCapturePlugin</exclude>
+                        <exclude>org/jusecase/poe/StashBuddy</exclude>
                     </excludes>
                 </configuration>
             </plugin>
