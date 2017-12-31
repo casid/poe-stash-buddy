@@ -1,5 +1,7 @@
 package org.jusecase.poe.entities;
 
+import org.jusecase.poe.plugins.InputPlugin;
+
 public enum ItemType {
     CURRENCY, CARD, ESSENCE, MAP;
 
@@ -20,9 +22,9 @@ public enum ItemType {
     public int getTabDelayInMillis() {
         switch (this) {
             case MAP:
-                return 100;
+                return InputPlugin.DELAY * 10;
             default:
-                return 10;
+                return InputPlugin.DELAY;
         }
     }
 }

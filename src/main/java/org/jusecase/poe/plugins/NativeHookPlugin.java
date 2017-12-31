@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 
 @Component
 public class NativeHookPlugin implements InputPlugin {
-    private static final int DELAY = 20;
 
     public NativeHookPlugin() {
         adjustLogging();
@@ -48,7 +47,7 @@ public class NativeHookPlugin implements InputPlugin {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException e) {
-            // Ignore
+            wait(millis);
         }
     }
 
@@ -59,7 +58,7 @@ public class NativeHookPlugin implements InputPlugin {
         mousePress(x, y, 0);
         wait(DELAY);
         mouseRelease(x, y, 0);
-        wait(DELAY);
+        wait(DELAY_AFTER_CLICK);
     }
 
     @Override
@@ -69,7 +68,7 @@ public class NativeHookPlugin implements InputPlugin {
         mousePress(x, y, NativeMouseEvent.CTRL_L_MASK);
         wait(DELAY);
         mouseRelease(x, y, NativeMouseEvent.CTRL_L_MASK);
-        wait(DELAY);
+        wait(DELAY_AFTER_CLICK);
     }
 
     private void mousePress(int x, int y, int modifiers) {
