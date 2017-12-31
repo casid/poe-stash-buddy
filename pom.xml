@@ -228,7 +228,7 @@
                         <exclude>org/jusecase/poe/ui/**</exclude>
                         <exclude>org/jusecase/poe/plugins/NativeHookPlugin.class</exclude>
                         <exclude>org/jusecase/poe/plugins/RobotImageCapturePlugin.class</exclude>
-                        <exclude>org/jusecase/poe/StashBuddy.class</exclude>
+                        <exclude>org/jusecase/poe/StashBuddy**</exclude>
                     </excludes>
                 </configuration>
             </plugin>
