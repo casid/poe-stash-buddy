@@ -8,6 +8,11 @@ A little script to automatically insert currency into your stash. GGG plz add th
 
 ![Preview](https://github.com/casid/poe-stash-buddy/raw/master/preview.gif "Preview")
 
+## Usage
+- run poe-stash-buddy.exe
+- run PoE, collect loot and go to your stash
+- Press CTR + SHIFT + A to insert loot from inventory to stash
+
 ## Setup
 - Download the latest [release](https://github.com/casid/poe-stash-buddy/releases)
 - Unzip anywhere on your harddrive
@@ -23,15 +28,10 @@ This is the area you are after:
 
 On my 3840x2160 display the inventory area is 2546, 1176, 1260, 524 with an offset of 3, 3
 
-**Behold** it's pretty essential to get these values as precisely as possible for the script to work properly.
+**Behold:** it's pretty essential to get these values as precisely as possible for the script to work properly.
 
 ### Stash tab locations
 Use roughly the center of each stash tab you want to activate.
 
 ### Ignored slots (optional)
 Click the inventory slots you don't want to have inserted in your stash. For instance your portal / wisdom scroll locations.
-
-## Usage
-- run poe-stash-buddy.exe
-- run PoE, collect loot and go to your stash
-- Press CTR + SHIFT + A to insert loot from inventory to stash
