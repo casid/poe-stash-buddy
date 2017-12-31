@@ -9,8 +9,10 @@ A little script to automatically insert currency into your stash. GGG plz add th
 ![Preview](https://github.com/casid/poe-stash-buddy/raw/master/preview.gif "Preview")
 
 ## Setup
-- start stash buddy
-- start PoE and go to your stash
+- Download the latest [release](https://github.com/casid/poe-stash-buddy/releases)
+- Unzip anywhere on your harddrive
+- run poe-stash-buddy.exe
+- run PoE and go to your stash
 - take a screenshot
   - extract inventory area and offsets into the settings dialog
   - extract stash tab locations for currency types you want to insert
