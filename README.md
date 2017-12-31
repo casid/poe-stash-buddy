@@ -6,6 +6,8 @@
 
 A little script to automatically insert currency into your stash. GGG plz add this as in-game feature つ ◕_◕ ༽つ
 
+**Caution** as some users on [reddit](https://www.reddit.com/r/pathofexile/comments/7n89bo/a_script_to_automatically_insert_currency_into) have pointed out, this could be against PoE's ToS, use at your own risk until there is an official statement from GGG. I used it over the last few days and haven't been banned so far.
+
 ![Preview](https://github.com/casid/poe-stash-buddy/raw/master/preview.gif "Preview")
 
 ## Usage
