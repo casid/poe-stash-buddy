@@ -57,13 +57,24 @@ public class SettingsMenu extends JFrame {
     private void initFields() {
         fields = new JPanel(new SpringLayout());
 
+        initHotkey();
         initInventoryArea();
         initSlotOffset();
         initStashTabLocations();
         initIgnoredSlots();
 
         add(fields);
-        SpringUtilities.makeCompactGrid(fields, 3 + stashTabLocations.size(), 2, 10, 10, 10, 10);
+        SpringUtilities.makeCompactGrid(fields, 3 + stashTabLocations.size() + 1, 2, 10, 10, 10, 10);
+    }
+
+    private void initHotkey() {
+        JLabel label = new JLabel("Hotkey", JLabel.RIGHT);
+        label.setMaximumSize(new Dimension(label.getMinimumSize().width, label.getMinimumSize().height));
+        fields.add(label);
+
+        JLabel hotkey = new JLabel("Ctrl + Shift + A", JLabel.LEFT);
+        hotkey.setMaximumSize(new Dimension(label.getMinimumSize().width, label.getMinimumSize().height));
+        fields.add(hotkey);
     }
 
     private void initSlotOffset() {
