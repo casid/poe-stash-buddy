@@ -32,9 +32,12 @@ public class StashBuddy implements Runnable, NativeKeyListener {
             if (e.getCause() != null) {
                 message += "\nCaused by " + e.getCause().getClass().getSimpleName() + " (" + e.getMessage() + ")";
             }
+            e.printStackTrace();
             JOptionPane.showConfirmDialog(null, message, "PoE Stash Buddy - Error", JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
             System.exit(1);
         });
+
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
         Injector injector = Injector.getInstance();
         injector.add(JsonSettingsGateway.class);
@@ -84,19 +87,16 @@ public class StashBuddy implements Runnable, NativeKeyListener {
     }
 
     public void showSettings() {
-        if (settingsMenu == null) {
-            settingsMenu = new SettingsMenu();
-            settingsMenu.init();
-            settingsMenu.addWindowListener(new WindowAdapter() {
-                public void windowClosing(WindowEvent windowEvent) {
-                    settingsMenu.dispose();
-                    settingsMenu = null;
-                }
-            });
-            settingsMenu.setVisible(true);
-        } else {
-            settingsMenu.requestFocus();
-        }
+        settingsMenu = new SettingsMenu();
+        settingsMenu.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        settingsMenu.init();
+        settingsMenu.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent windowEvent) {
+                settingsMenu.dispose();
+                settingsMenu = null;
+            }
+        });
+        settingsMenu.setVisible(true);
     }
 
     @Override

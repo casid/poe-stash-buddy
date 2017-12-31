@@ -12,30 +12,29 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowEvent;
 import java.util.EnumMap;
 
 import static org.jusecase.poe.gateways.InventorySlotGateway.COLS;
 import static org.jusecase.poe.gateways.InventorySlotGateway.ROWS;
 
 @Component
-public class SettingsMenu extends Frame {
+public class SettingsMenu extends JFrame {
 
     @Inject
     private SettingsGateway settingsGateway;
 
     private Settings settings;
 
-    private Panel fields;
-    private TextField inventoryAreaX;
-    private TextField inventoryAreaY;
-    private TextField inventoryAreaWidth;
-    private TextField inventoryAreaHeight;
-    private TextField slotOffsetX;
-    private TextField slotOffsetY;
+    private JPanel fields;
+    private JTextField inventoryAreaX;
+    private JTextField inventoryAreaY;
+    private JTextField inventoryAreaWidth;
+    private JTextField inventoryAreaHeight;
+    private JTextField slotOffsetX;
+    private JTextField slotOffsetY;
     private EnumMap<ItemType, StashTabLocation> stashTabLocations = new EnumMap<>(ItemType.class);
 
-    public SettingsMenu() throws HeadlessException {
+    public SettingsMenu() {
         super("PoE Stash Buddy");
 
         settings = settingsGateway.getSettings();
@@ -47,7 +46,7 @@ public class SettingsMenu extends Frame {
     }
 
     public void init() {
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
         initFields();
         initButtons();
@@ -56,7 +55,7 @@ public class SettingsMenu extends Frame {
     }
 
     private void initFields() {
-        fields = new Panel(new SpringLayout());
+        fields = new JPanel(new SpringLayout());
 
         initInventoryArea();
         initSlotOffset();
@@ -68,14 +67,14 @@ public class SettingsMenu extends Frame {
     }
 
     private void initSlotOffset() {
-        Label label = new Label("Inventory offset", Label.RIGHT);
+        JLabel label = new JLabel("Inventory offset", JLabel.RIGHT);
         label.setMaximumSize(new Dimension(label.getMinimumSize().width, label.getMinimumSize().height));
         fields.add(label);
 
-        Panel panel = new Panel(new FlowLayout(FlowLayout.LEFT));
-        slotOffsetX = new TextField("" + settings.slotOffsetX, 5);
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        slotOffsetX = new JTextField("" + settings.slotOffsetX, 5);
         panel.add(slotOffsetX);
-        slotOffsetY = new TextField("" + settings.slotOffsetY, 5);
+        slotOffsetY = new JTextField("" + settings.slotOffsetY, 5);
         panel.add(slotOffsetY);
         panel.setMaximumSize(new Dimension(panel.getMaximumSize().width, panel.getMinimumSize().height));
         fields.add(panel);
@@ -83,7 +82,7 @@ public class SettingsMenu extends Frame {
 
     private void initStashTabLocations() {
         for (ItemType itemType : ItemType.values()) {
-            Label label = new Label(itemType.getTabName() + " tab", Label.RIGHT);
+            JLabel label = new JLabel(itemType.getTabName() + " tab", JLabel.RIGHT);
             label.setMaximumSize(new Dimension(label.getMinimumSize().width, label.getMinimumSize().height));
             fields.add(label);
 
@@ -97,34 +96,34 @@ public class SettingsMenu extends Frame {
     }
 
     private void initInventoryArea() {
-        Label label = new Label("Inventory area", Label.RIGHT);
+        JLabel label = new JLabel("Inventory area", JLabel.RIGHT);
         label.setMaximumSize(new Dimension(label.getMinimumSize().width, label.getMinimumSize().height));
         fields.add(label);
 
-        Panel panel = new Panel(new FlowLayout(FlowLayout.LEFT));
-        inventoryAreaX = new TextField("" + settings.inventoryAreaX, 5);
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        inventoryAreaX = new JTextField("" + settings.inventoryAreaX, 5);
         panel.add(inventoryAreaX);
-        inventoryAreaY = new TextField("" + settings.inventoryAreaY, 5);
+        inventoryAreaY = new JTextField("" + settings.inventoryAreaY, 5);
         panel.add(inventoryAreaY);
-        inventoryAreaWidth = new TextField("" + settings.inventoryAreaWidth, 5);
+        inventoryAreaWidth = new JTextField("" + settings.inventoryAreaWidth, 5);
         panel.add(inventoryAreaWidth);
-        inventoryAreaHeight = new TextField("" + settings.inventoryAreaHeight, 5);
+        inventoryAreaHeight = new JTextField("" + settings.inventoryAreaHeight, 5);
         panel.add(inventoryAreaHeight);
         panel.setMaximumSize(new Dimension(panel.getMaximumSize().width, panel.getMinimumSize().height));
         fields.add(panel);
     }
 
     private void initIgnoredSlots() {
-        Label label = new Label("Ignored slots", Label.RIGHT);
+        JLabel label = new JLabel("Ignored slots", JLabel.RIGHT);
         label.setMaximumSize(new Dimension(label.getMinimumSize().width, label.getMinimumSize().height));
         fields.add(label);
 
-        Panel panel = new Panel(new GridLayout(ROWS, COLS, 1, 1));
+        JPanel panel = new JPanel(new GridLayout(ROWS, COLS, 1, 1));
         for (int y = 0; y < ROWS; ++y) {
             for (int x = 0; x < COLS; ++x) {
                 final int slotIndex = x * ROWS + y;
 
-                Panel slot = new Panel();
+                JPanel slot = new JPanel();
                 slot.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
@@ -144,7 +143,7 @@ public class SettingsMenu extends Frame {
         fields.add(panel);
     }
 
-    private void updateSlotColor(Panel slot, int slotIndex) {
+    private void updateSlotColor(JPanel slot, int slotIndex) {
         if (settings.ignoredSlots.contains(slotIndex)) {
             slot.setBackground(Color.RED);
         } else {
@@ -153,17 +152,17 @@ public class SettingsMenu extends Frame {
     }
 
     private void initButtons() {
-        Panel controlPanel = new Panel(new FlowLayout(FlowLayout.LEFT));
+        JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-        Button apply = new Button("Apply");
+        JButton apply = new JButton("Apply");
         apply.addActionListener(e -> apply());
         controlPanel.add(apply);
 
-        Button save = new Button("Save");
+        JButton save = new JButton("Save");
         save.addActionListener(e -> save());
         controlPanel.add(save);
 
-        Button cancel = new Button("Cancel");
+        JButton cancel = new JButton("Cancel");
         cancel.addActionListener(e -> close());
         controlPanel.add(cancel);
 
@@ -171,7 +170,7 @@ public class SettingsMenu extends Frame {
     }
 
     private void close() {
-        dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+        dispose();
     }
 
     private void apply() {
@@ -190,7 +189,7 @@ public class SettingsMenu extends Frame {
         close();
     }
 
-    private int parseInt(TextField textField) {
+    private int parseInt(JTextField textField) {
         try {
             return Integer.parseInt(textField.getText());
         } catch (NumberFormatException e) {
@@ -198,11 +197,11 @@ public class SettingsMenu extends Frame {
         }
     }
 
-    private class StashTabLocation extends Panel {
+    private class StashTabLocation extends JPanel {
         ItemType type;
-        Checkbox enabled;
-        TextField x;
-        TextField y;
+        JCheckBox enabled;
+        JTextField x;
+        JTextField y;
 
         public StashTabLocation(ItemType type) {
             this.type = type;
@@ -211,14 +210,14 @@ public class SettingsMenu extends Frame {
         void init() {
             setLayout(new FlowLayout(FlowLayout.LEFT));
 
-            enabled = new Checkbox();
-            enabled.addItemListener(l -> applyToSettings());
+            enabled = new JCheckBox();
+            enabled.addActionListener(l -> applyToSettings());
             add(enabled);
 
-            x = new TextField(5);
+            x = new JTextField(5);
             add(x);
 
-            y = new TextField(5);
+            y = new JTextField(5);
             add(y);
 
             update();
@@ -227,13 +226,13 @@ public class SettingsMenu extends Frame {
         void update() {
             Point location = settings.stashTabLocations.get(type);
             if (location == null) {
-                enabled.setState(false);
+                enabled.setSelected(false);
                 x.setEnabled(false);
                 y.setEnabled(false);
                 x.setText("0");
                 y.setText("0");
             } else {
-                enabled.setState(true);
+                enabled.setSelected(true);
                 x.setEnabled(true);
                 y.setEnabled(true);
                 x.setText("" + location.x);
@@ -242,7 +241,7 @@ public class SettingsMenu extends Frame {
         }
 
         void applyToSettings() {
-            if (enabled.getState()) {
+            if (enabled.isSelected()) {
                 Point point = settings.stashTabLocations.computeIfAbsent(type, t -> new Point());
                 point.x = parseInt(x);
                 point.y = parseInt(y);
