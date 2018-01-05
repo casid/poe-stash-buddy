@@ -28,7 +28,8 @@ A little script to automatically insert currency into your stash. GGG plz add th
 This is the area you are after:
 ![Inventory Area](https://github.com/casid/poe-stash-buddy/raw/master/inventory-area.png "Inventory Area")
 
-Values for common resolutions
+Values for common resolutions:
+
 | Resolution | Inventory area | Offset |
 | --- | --- | --- |
 | 3840x2160 | 2546, 1176, 1260, 524 | 3, 3 |
