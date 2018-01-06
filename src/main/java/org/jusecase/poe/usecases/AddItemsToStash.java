@@ -46,7 +46,7 @@ public class AddItemsToStash {
         Point point = getStashTabLocation(itemType);
         if (point != null) {
             inputPlugin.click(point.x, point.y);
-            inputPlugin.wait(itemType.getTabDelayInMillis());
+            inputPlugin.waitDefaultTime(itemType.getTabDelayFactor());
             for (InventorySlot slot : slots) {
                 inputPlugin.clickWithControlPressed(slot.x, slot.y);
             }

@@ -5,12 +5,17 @@ import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyListener;
 import org.jnativehook.mouse.NativeMouseEvent;
 import org.jusecase.inject.Component;
+import org.jusecase.poe.gateways.SettingsGateway;
 
+import javax.inject.Inject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Component
 public class NativeHookPlugin implements InputPlugin {
+
+    @Inject
+    SettingsGateway settingsGateway;
 
     public NativeHookPlugin() {
         adjustLogging();
@@ -52,11 +57,21 @@ public class NativeHookPlugin implements InputPlugin {
     }
 
     @Override
+    public void waitDefaultTime() {
+        waitDefaultTime(1);
+    }
+
+    @Override
+    public void waitDefaultTime(int factor) {
+        wait(factor * settingsGateway.getSettings().inputDelayMillis);
+    }
+
+    @Override
     public void click(int x, int y) {
         mouseMove(x, y, 0);
-        wait(DELAY);
+        waitDefaultTime();
         mousePress(x, y, 0);
-        wait(DELAY);
+        waitDefaultTime();
         mouseRelease(x, y, 0);
         wait(DELAY_AFTER_CLICK);
     }
@@ -64,9 +79,9 @@ public class NativeHookPlugin implements InputPlugin {
     @Override
     public void clickWithControlPressed(int x, int y) {
         mouseMove(x, y, NativeMouseEvent.CTRL_L_MASK);
-        wait(DELAY);
+        waitDefaultTime();
         mousePress(x, y, NativeMouseEvent.CTRL_L_MASK);
-        wait(DELAY);
+        waitDefaultTime();
         mouseRelease(x, y, NativeMouseEvent.CTRL_L_MASK);
         wait(DELAY_AFTER_CLICK);
     }

@@ -32,6 +32,7 @@ public class SettingsMenu extends JFrame {
     private JTextField inventoryAreaHeight;
     private JTextField slotOffsetX;
     private JTextField slotOffsetY;
+    private JTextField inputDelayMillis;
     private EnumMap<ItemType, StashTabLocation> stashTabLocations = new EnumMap<>(ItemType.class);
 
     public SettingsMenu() {
@@ -62,9 +63,10 @@ public class SettingsMenu extends JFrame {
         initSlotOffset();
         initStashTabLocations();
         initIgnoredSlots();
+        initInputDelay();
 
         add(fields);
-        SpringUtilities.makeCompactGrid(fields, 3 + stashTabLocations.size() + 1, 2, 10, 10, 10, 10);
+        SpringUtilities.makeCompactGrid(fields, 3 + stashTabLocations.size() + 1 + 1, 2, 10, 10, 10, 10);
     }
 
     private void initHotkey() {
@@ -73,7 +75,7 @@ public class SettingsMenu extends JFrame {
         fields.add(label);
 
         JLabel hotkey = new JLabel("Ctrl + Shift + A", JLabel.LEFT);
-        hotkey.setMaximumSize(new Dimension(label.getMinimumSize().width, label.getMinimumSize().height));
+        hotkey.setMaximumSize(new Dimension(hotkey.getMinimumSize().width, hotkey.getMinimumSize().height));
         fields.add(hotkey);
     }
 
@@ -154,6 +156,15 @@ public class SettingsMenu extends JFrame {
         fields.add(panel);
     }
 
+    private void initInputDelay() {
+        JLabel label = new JLabel("Input delay (ms)", JLabel.RIGHT);
+        label.setMaximumSize(new Dimension(label.getMinimumSize().width, label.getMinimumSize().height));
+        fields.add(label);
+
+        inputDelayMillis = new JTextField("" + settings.inputDelayMillis, 5);
+        fields.add(inputDelayMillis);
+    }
+
     private void updateSlotColor(JPanel slot, int slotIndex) {
         if (settings.ignoredSlots.contains(slotIndex)) {
             slot.setBackground(Color.RED);
@@ -192,6 +203,7 @@ public class SettingsMenu extends JFrame {
         settings.slotOffsetX = parseInt(slotOffsetX);
         settings.slotOffsetY = parseInt(slotOffsetY);
         stashTabLocations.values().forEach(StashTabLocation::applyToSettings);
+        settings.inputDelayMillis = parseInt(inputDelayMillis);
         new SaveSettings().execute(settings);
     }
 

@@ -16,6 +16,14 @@ public class InputPluginTrainer implements InputPlugin {
     }
 
     @Override
+    public void waitDefaultTime() {
+    }
+
+    @Override
+    public void waitDefaultTime(int factor) {
+    }
+
+    @Override
     public void click(int x, int y) {
         clicks.add(new Point(x, y));
     }

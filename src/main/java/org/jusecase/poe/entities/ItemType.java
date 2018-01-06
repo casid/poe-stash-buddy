@@ -19,12 +19,12 @@ public enum ItemType {
         return null;
     }
 
-    public int getTabDelayInMillis() {
+    public int getTabDelayFactor() {
         switch (this) {
             case MAP:
-                return InputPlugin.DELAY * 10;
+                return 10;
             default:
-                return InputPlugin.DELAY;
+                return 1;
         }
     }
 }

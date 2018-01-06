@@ -12,6 +12,7 @@ public class Settings implements Cloneable {
     public int inventoryAreaHeight;
     public int slotOffsetX;
     public int slotOffsetY;
+    public int inputDelayMillis = 30;
     public SortedSet<Integer> ignoredSlots = new TreeSet<>();
     public EnumMap<ItemType, Point> stashTabLocations = new EnumMap<>(ItemType.class);
 
