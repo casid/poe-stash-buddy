@@ -99,6 +99,8 @@ public class StashBuddy implements Runnable, NativeKeyListener {
         settingsMenu.setVisible(true);
     }
 
+    private boolean pressed;
+
     @Override
     public void nativeKeyTyped(NativeKeyEvent nativeKeyEvent) {
     }
@@ -107,11 +109,15 @@ public class StashBuddy implements Runnable, NativeKeyListener {
     public void nativeKeyPressed(NativeKeyEvent nativeKeyEvent) {
         int modifiers = nativeKeyEvent.getModifiers();
         if ((modifiers & CTRL_MASK) != 0 && (modifiers & SHIFT_MASK) != 0 && nativeKeyEvent.getKeyCode() == NativeKeyEvent.VC_A) {
-            new AddItemsToStash().execute();
+            pressed = true;
         }
     }
 
     @Override
     public void nativeKeyReleased(NativeKeyEvent nativeKeyEvent) {
+        if (pressed && nativeKeyEvent.getKeyCode() == NativeKeyEvent.VC_CONTROL) {
+            pressed = false;
+            new AddItemsToStash().execute();
+        }
     }
 }
