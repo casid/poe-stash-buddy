@@ -3,7 +3,7 @@ package org.jusecase.poe.entities;
 import org.jusecase.poe.plugins.InputPlugin;
 
 public enum ItemType {
-    CURRENCY, CARD, ESSENCE, MAP;
+    CURRENCY, CARD, ESSENCE, MAP, FRAGMENT;
 
     public String getTabName() {
         switch (this) {
@@ -15,6 +15,8 @@ public enum ItemType {
                 return "Essence";
             case MAP:
                 return "Map";
+            case FRAGMENT:
+                return "Fragment";
         }
         return null;
     }

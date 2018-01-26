@@ -42,6 +42,7 @@ public class ResourceItemGateway implements ItemGateway {
             loadItems(root.resolve("card"), ItemType.CARD, items);
             loadItems(root.resolve("essence"), ItemType.ESSENCE, items);
             loadItems(root.resolve("map"), ItemType.MAP, items);
+            loadItems(root.resolve("fragment"), ItemType.FRAGMENT, items);
 
             if (items.isEmpty()) {
                 throw new IllegalStateException("no item resources found!");
