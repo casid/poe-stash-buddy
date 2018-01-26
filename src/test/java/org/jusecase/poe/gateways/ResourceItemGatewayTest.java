@@ -27,7 +27,7 @@ class ResourceItemGatewayTest implements ComponentTest {
     void currenciesAreLoadedFromResources() {
         List<Item> currencies = gateway.getAll();
 
-        assertThat(currencies.size()).isEqualTo(55 + 1 + 104 + 156 + 10);
+        assertThat(currencies.size()).isEqualTo(55 + 1 + 104 + 156 + 11);
         assertThat(currencies.get(0).imageHash.features).isNotEmpty();
         assertThat(currencies.get(0).imageHash.colors).isNotEmpty();
         assertThat(currencies.get(0).type).isEqualTo(ItemType.CURRENCY);
