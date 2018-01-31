@@ -30,7 +30,7 @@ public class CapturedInventorySlotGateway implements InventorySlotGateway {
     private int slotOffsetY;
 
     @Override
-    public java.util.List<InventorySlot> getAll() {
+    public List<InventorySlot> getAll() {
         BufferedImage inventoryImage = imageCapturePlugin.captureScreen(inventoryArea);
 
         Set<Integer> ignoredSlots = getIgnoredSlots();
