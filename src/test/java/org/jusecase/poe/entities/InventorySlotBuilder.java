@@ -44,7 +44,7 @@ public class InventorySlotBuilder implements Builder<InventorySlot>, InventorySl
         Hash hash = new Hash();
         hash.features = value;
         hash.colors = value;
-        entity.imageHash = hash;
+        entity.imageHashes.add(hash);
         return this;
     }
 }

@@ -1,10 +1,7 @@
 package org.jusecase.poe.usecases;
 
 import org.jusecase.inject.Component;
-import org.jusecase.poe.entities.InventorySlot;
-import org.jusecase.poe.entities.Item;
-import org.jusecase.poe.entities.ItemType;
-import org.jusecase.poe.entities.Settings;
+import org.jusecase.poe.entities.*;
 import org.jusecase.poe.gateways.InventorySlotGateway;
 import org.jusecase.poe.gateways.ItemGateway;
 import org.jusecase.poe.gateways.SettingsGateway;
@@ -75,8 +72,10 @@ public class AddItemsToStash {
 
     private ItemType getType(InventorySlot inventorySlot) {
         for (Item item : itemGateway.getAll()) {
-            if (imageHashPlugin.isSimilar(inventorySlot.imageHash, item.imageHash)) {
-                return item.type;
+            for (Hash imageHash : inventorySlot.imageHashes) {
+                if (imageHashPlugin.isSimilar(imageHash, item.imageHash)) {
+                    return item.type;
+                }
             }
         }
         return null;

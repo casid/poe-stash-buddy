@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.jusecase.inject.ComponentTest;
 import org.jusecase.inject.Trainer;
+import org.jusecase.poe.entities.Hash;
 import org.jusecase.poe.entities.Item;
 import org.jusecase.poe.entities.InventorySlot;
 import org.jusecase.poe.entities.Settings;
@@ -89,6 +90,16 @@ class CapturedInventorySlotGatewayTest implements ComponentTest {
     }
 
     @Test
+    void ditherSamplesToCheckMoreThanOneHash() {
+        imageCapturePluginTrainer.givenImage("inventory-4k-crop-exact-sextant.png");
+        gateway.setInventoryArea(new Rectangle(2000, 1000, 1260, 524));
+
+        whenGetAllInventorySlots();
+
+        thenSlotContainsCurrency(29, true);
+    }
+
+    @Test
     void smallerResolution() {
         imageCapturePluginTrainer.givenImage("inventory-2k-crop-exact.png");
         gateway.setInventoryArea(new Rectangle(0, 0, 631, 261));
@@ -127,8 +138,10 @@ class CapturedInventorySlotGatewayTest implements ComponentTest {
 
     private Item getMatchingCurrency(InventorySlot slot) {
         for (Item item : itemGateway.getAll()) {
-            if (imageHashPlugin.isSimilar(slot.imageHash, item.imageHash)) {
-                return item;
+            for (Hash imageHash : slot.imageHashes) {
+                if (imageHashPlugin.isSimilar(imageHash, item.imageHash)) {
+                    return item;
+                }
             }
         }
         return null;

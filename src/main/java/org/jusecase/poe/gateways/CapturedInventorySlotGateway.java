@@ -60,7 +60,9 @@ public class CapturedInventorySlotGateway implements InventorySlotGateway {
         }
 
         slots.parallelStream().forEach(slot -> {
-            slot.imageHash = getHash(inventoryImage, slot.x, slot.y, (int) slotWidth, (int) slotHeight);
+            for (int y = -1; y <= 1; ++y) {
+                slot.imageHashes.add(getHash(inventoryImage, slot.x, slot.y + y * slotOffsetY, (int) slotWidth, (int) slotHeight));
+            }
             slot.x += inventoryArea.x + slotCenterX;
             slot.y += inventoryArea.y + slotCenterY;
         });
@@ -79,6 +81,7 @@ public class CapturedInventorySlotGateway implements InventorySlotGateway {
 
     private Hash getHash(BufferedImage inventoryImage, int slotX, int slotY, int slotWidth, int slotHeight) {
         try {
+            slotY = Math.max(0, Math.min(inventoryImage.getHeight() - slotHeight, slotY));
             return imageHashPlugin.getHash(inventoryImage.getSubimage(slotX, slotY, slotWidth, slotHeight));
         } catch (Exception e) {
             throw new RuntimeException(e);
