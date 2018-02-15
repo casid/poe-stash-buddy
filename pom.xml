@@ -103,7 +103,7 @@
             <plugin>
                 <groupId>org.jusecase</groupId>
                 <artifactId>builders-generator</artifactId>
-                <version>0.3.3</version>
+                <version>0.4.0</version>
                 <configuration>
                     <targetDirectory>src/test/generated-builders</targetDirectory>
                     <packages>
