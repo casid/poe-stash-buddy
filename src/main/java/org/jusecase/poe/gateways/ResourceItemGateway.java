@@ -7,6 +7,7 @@ import org.jusecase.poe.plugins.ImageHashPlugin;
 import org.jusecase.poe.util.PathUtils;
 
 import javax.inject.Inject;
+import java.awt.*;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.FileSystemNotFoundException;
@@ -31,6 +32,11 @@ public class ResourceItemGateway implements ItemGateway {
             items = loadItems();
         }
         return items;
+    }
+
+    @Override
+    public Item getScrollOfWisdom() {
+        return getAll().stream().filter(i -> "CurrencyIdentification.png".equals(i.image)).findFirst().orElse(null);
     }
 
     private List<Item> loadItems() {
@@ -72,14 +78,26 @@ public class ResourceItemGateway implements ItemGateway {
 
     private void calculateImageHash(Item item) {
         try {
-            item.imageHash = imageHashPlugin.getHash(Files.newInputStream(item.path));
+            Color backgroundColor = null;
+            if (item.unidentified) {
+                backgroundColor = new Color(42, 4, 4);
+            }
+            item.imageHash = imageHashPlugin.getHash(Files.newInputStream(item.path), backgroundColor);
         } catch (IOException e) {
             throw new RuntimeException("Failed to calculate perceptual hash for item " + item, e);
         }
     }
 
     private void loadItems(Path directory, ItemType type, List<Item> items) throws IOException {
-        Files.walk(directory, 1).filter(p -> p.toString().endsWith(".png")).forEach(path -> items.add(loadItem(path, type)));
+        Files.walk(directory, 1).filter(p -> p.toString().endsWith(".png")).forEach(path -> {
+            items.add(loadItem(path, type));
+
+            if (type == ItemType.MAP) {
+                Item unidentifiedMap = loadItem(path, type);
+                unidentifiedMap.unidentified = true;
+                items.add(unidentifiedMap);
+            }
+        });
     }
 
     private Item loadItem(Path path, ItemType type) {

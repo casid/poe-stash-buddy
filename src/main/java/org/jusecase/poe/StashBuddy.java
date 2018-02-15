@@ -8,10 +8,13 @@ import org.jusecase.poe.gateways.*;
 import org.jusecase.poe.plugins.ImageHashPlugin;
 import org.jusecase.poe.plugins.NativeHookPlugin;
 import org.jusecase.poe.plugins.RobotImageCapturePlugin;
+import org.jusecase.poe.services.ItemTypeService;
 import org.jusecase.poe.ui.SettingsMenu;
 import org.jusecase.poe.ui.TrayMenu;
 import org.jusecase.poe.usecases.AddItemsToStash;
 import org.jusecase.poe.usecases.ApplySettings;
+import org.jusecase.poe.usecases.IdentifyItems;
+import org.jusecase.poe.usecases.Usecase;
 
 import javax.inject.Inject;
 import javax.swing.*;
@@ -23,8 +26,6 @@ import static org.jnativehook.NativeInputEvent.SHIFT_MASK;
 
 @Component
 public class StashBuddy implements Runnable, NativeKeyListener {
-
-    private SettingsMenu settingsMenu;
 
     public static void main(String[] args) throws Exception {
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
@@ -46,6 +47,7 @@ public class StashBuddy implements Runnable, NativeKeyListener {
         injector.add(RobotImageCapturePlugin.class);
         injector.add(NativeHookPlugin.class);
         injector.add(CapturedInventorySlotGateway.class);
+        injector.add(ItemTypeService.class);
 
         new StashBuddy().run();
     }
@@ -56,6 +58,9 @@ public class StashBuddy implements Runnable, NativeKeyListener {
     private SettingsGateway settingsGateway;
     @Inject
     private ItemGateway itemGateway;
+
+    private SettingsMenu settingsMenu;
+    private Usecase usecase;
 
     @Override
     public void run() {
@@ -99,8 +104,6 @@ public class StashBuddy implements Runnable, NativeKeyListener {
         settingsMenu.setVisible(true);
     }
 
-    private boolean pressed;
-
     @Override
     public void nativeKeyTyped(NativeKeyEvent nativeKeyEvent) {
     }
@@ -108,16 +111,20 @@ public class StashBuddy implements Runnable, NativeKeyListener {
     @Override
     public void nativeKeyPressed(NativeKeyEvent nativeKeyEvent) {
         int modifiers = nativeKeyEvent.getModifiers();
-        if ((modifiers & CTRL_MASK) != 0 && (modifiers & SHIFT_MASK) != 0 && nativeKeyEvent.getKeyCode() == NativeKeyEvent.VC_A) {
-            pressed = true;
+        if ((modifiers & CTRL_MASK) != 0 && (modifiers & SHIFT_MASK) != 0) {
+            if (nativeKeyEvent.getKeyCode() == NativeKeyEvent.VC_A) {
+                usecase = new AddItemsToStash();
+            } else if (nativeKeyEvent.getKeyCode() == NativeKeyEvent.VC_V) {
+                usecase = new IdentifyItems();
+            }
         }
     }
 
     @Override
     public void nativeKeyReleased(NativeKeyEvent nativeKeyEvent) {
-        if (pressed && nativeKeyEvent.getKeyCode() == NativeKeyEvent.VC_CONTROL) {
-            pressed = false;
-            new AddItemsToStash().execute();
+        if (usecase != null && nativeKeyEvent.getKeyCode() == NativeKeyEvent.VC_CONTROL) {
+            usecase.execute();
+            usecase = null;
         }
     }
 }

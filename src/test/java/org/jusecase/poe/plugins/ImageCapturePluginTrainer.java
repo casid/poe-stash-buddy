@@ -7,6 +7,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 
 import static org.jusecase.Builders.a;
 import static org.jusecase.Builders.inputStream;
@@ -14,6 +17,7 @@ import static org.jusecase.Builders.inputStream;
 public class ImageCapturePluginTrainer implements ImageCapturePlugin {
 
     private BufferedImage image;
+    private List<BufferedImage> images = new ArrayList<>();
 
     public void givenImage(BufferedImage image) {
         this.image = image;
@@ -27,8 +31,18 @@ public class ImageCapturePluginTrainer implements ImageCapturePlugin {
         }
     }
 
+    public void givenImages(String ... resources) {
+        for (String resource : resources) {
+            givenImage(resource);
+            images.add(image);
+        }
+    }
+
     @Override
     public BufferedImage captureScreen(Rectangle area) {
-        return image;
+        if (images.isEmpty()) {
+            return image;
+        }
+        return images.remove(0);
     }
 }

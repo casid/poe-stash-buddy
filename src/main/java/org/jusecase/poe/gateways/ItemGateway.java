@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface ItemGateway {
     List<Item> getAll();
+    Item getScrollOfWisdom();
 }

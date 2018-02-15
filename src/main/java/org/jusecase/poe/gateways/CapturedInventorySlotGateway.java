@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Component
 public class CapturedInventorySlotGateway implements InventorySlotGateway {
@@ -31,9 +34,45 @@ public class CapturedInventorySlotGateway implements InventorySlotGateway {
 
     @Override
     public List<InventorySlot> getAll() {
-        BufferedImage inventoryImage = imageCapturePlugin.captureScreen(inventoryArea);
+        return getAll(new ImageHashSlotProcessor(), getIgnoredSlots());
+    }
 
-        Set<Integer> ignoredSlots = getIgnoredSlots();
+    @Override
+    public List<InventorySlot> getAllUnidentified() {
+        List<InventorySlot> unidentified = new CopyOnWriteArrayList<>();
+
+        List<InventorySlot> all = getAll(new ImageHashSlotProcessor() {
+            @Override
+            public void process(InventorySlot slot, BufferedImage inventoryImage, int slotWidth, int slotHeight) {
+                super.process(slot, inventoryImage, slotWidth, slotHeight);
+
+                if (isUnidentified(inventoryImage, slot.x, slot.y, slotWidth, slotHeight)) {
+                    unidentified.add(slot);
+                }
+            }
+        }, getIgnoredSlots());
+
+        all.removeIf(s -> !unidentified.contains(s));
+
+        return all;
+    }
+
+    @Override
+    public List<InventorySlot> getIgnored() {
+        return getAll(new ImageHashSlotProcessor(), getUnignoredSlots());
+    }
+
+    public void setInventoryArea(Rectangle inventoryArea) {
+        this.inventoryArea = inventoryArea;
+    }
+
+    public void setSlotOffset(int x, int y) {
+        slotOffsetX = x;
+        slotOffsetY = y;
+    }
+
+    private List<InventorySlot> getAll(SlotProcessor slotProcessor, Set<Integer> ignoredSlots) {
+        BufferedImage inventoryImage = imageCapturePlugin.captureScreen(inventoryArea);
 
         double slotWidth = ((double) inventoryArea.width - (slotOffsetX * (COLS - 1))) / COLS;
         double slotHeight = ((double) inventoryArea.height - (slotOffsetY * (ROWS - 1))) / ROWS;
@@ -60,11 +99,7 @@ public class CapturedInventorySlotGateway implements InventorySlotGateway {
         }
 
         slots.parallelStream().forEach(slot -> {
-            for (int x = -1; x <= 1; ++x) {
-                for (int y = -1; y <= 1; ++y) {
-                    slot.imageHashes.add(getHash(inventoryImage, slot.x + x * slotOffsetX, slot.y + y * slotOffsetY, (int) slotWidth, (int) slotHeight));
-                }
-            }
+            slotProcessor.process(slot, inventoryImage, (int) slotWidth, (int) slotHeight);
             slot.x += inventoryArea.x + slotCenterX;
             slot.y += inventoryArea.y + slotCenterY;
         });
@@ -81,6 +116,11 @@ public class CapturedInventorySlotGateway implements InventorySlotGateway {
         return settings.ignoredSlots;
     }
 
+    private Set<Integer> getUnignoredSlots() {
+        Set<Integer> ignoredSlots = getIgnoredSlots();
+        return IntStream.range(0, ROWS * COLS).filter(i -> !ignoredSlots.contains(i)).boxed().collect(Collectors.toSet());
+    }
+
     private Hash getHash(BufferedImage inventoryImage, int slotX, int slotY, int slotWidth, int slotHeight) {
         try {
             slotX = Math.max(0, Math.min(inventoryImage.getWidth() - slotWidth, slotX));
@@ -91,12 +131,45 @@ public class CapturedInventorySlotGateway implements InventorySlotGateway {
         }
     }
 
-    public void setInventoryArea(Rectangle inventoryArea) {
-        this.inventoryArea = inventoryArea;
+    private boolean isUnidentified(BufferedImage inventoryImage, int slotX, int slotY, int slotWidth, int slotHeight) {
+        BufferedImage slotImage = inventoryImage.getSubimage(slotX, slotY, slotWidth, slotHeight);
+        return getAmountOfUnidentifiedPixels(slotImage) >= 0.075f;
     }
 
-    public void setSlotOffset(int x, int y) {
-        slotOffsetX = x;
-        slotOffsetY = y;
+    private float getAmountOfUnidentifiedPixels(BufferedImage slotImage) {
+        int unidentifiedPixels = 0;
+        int totalPixels = slotImage.getWidth() * slotImage.getHeight();
+
+        for (int x = 0; x < slotImage.getWidth(); ++x) {
+            for (int y = 0; y < slotImage.getHeight(); ++y) {
+                int rgb = slotImage.getRGB(x, y);
+
+                int r = (rgb >> 16) & 0xff;
+                int g = (rgb >> 8) & 0xff;
+                int b = rgb & 0xff;
+
+                if (r >= 40 && r <= 45 && g < 5 && b < 5) {
+                    ++unidentifiedPixels;
+                }
+            }
+        }
+
+        return (float) unidentifiedPixels / totalPixels;
+    }
+
+    private interface SlotProcessor {
+        void process(InventorySlot slot, BufferedImage inventoryImage, int slotWidth, int slotHeight);
+    }
+
+    private class ImageHashSlotProcessor implements SlotProcessor {
+
+        @Override
+        public void process(InventorySlot slot, BufferedImage inventoryImage, int slotWidth, int slotHeight) {
+            for (int x = -1; x <= 1; ++x) {
+                for (int y = -1; y <= 1; ++y) {
+                    slot.imageHashes.add(getHash(inventoryImage, slot.x + x * slotOffsetX, slot.y + y * slotOffsetY, slotWidth, slotHeight));
+                }
+            }
+        }
     }
 }

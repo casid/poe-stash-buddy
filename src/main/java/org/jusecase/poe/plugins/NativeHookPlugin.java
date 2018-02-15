@@ -71,47 +71,67 @@ public class NativeHookPlugin implements InputPlugin {
     public void click(int x, int y) {
         mouseMove(x, y);
         waitDefaultTime();
-        mousePress(x, y);
+        mousePress(x, y, NativeMouseEvent.BUTTON1);
         waitDefaultTime();
-        mouseRelease(x, y);
+        mouseRelease(x, y, NativeMouseEvent.BUTTON1);
+        waitDefaultTime();
+    }
+
+    @Override
+    public void rightClick(int x, int y) {
+        mouseMove(x, y);
+        waitDefaultTime();
+        mousePress(x, y, NativeMouseEvent.BUTTON2);
+        waitDefaultTime();
+        mouseRelease(x, y, NativeMouseEvent.BUTTON2);
         waitDefaultTime();
     }
 
     @Override
     public void clickWithControlPressed(int x, int y) {
-        sendControlKeyEvent(NativeKeyEvent.NATIVE_KEY_PRESSED);
+        sendKeyEvent(NativeKeyEvent.NATIVE_KEY_PRESSED, NativeKeyEvent.VC_CONTROL);
         click(x, y);
-        sendControlKeyEvent(NativeKeyEvent.NATIVE_KEY_RELEASED);
+        sendKeyEvent(NativeKeyEvent.NATIVE_KEY_RELEASED, NativeKeyEvent.VC_CONTROL);
     }
 
-    private void sendControlKeyEvent(int nativeKeyPressed) {
+    @Override
+    public void pressShift() {
+        sendKeyEvent(NativeKeyEvent.NATIVE_KEY_PRESSED, NativeKeyEvent.VC_SHIFT);
+    }
+
+    @Override
+    public void releaseShift() {
+        sendKeyEvent(NativeKeyEvent.NATIVE_KEY_RELEASED, NativeKeyEvent.VC_SHIFT);
+    }
+
+    private void sendKeyEvent(int nativeKeyPressed, int nativeKey) {
         GlobalScreen.postNativeEvent(new NativeKeyEvent(
                 nativeKeyPressed,
                 0x00,        // Modifiers
                 0x00,        // Raw Code
-                NativeKeyEvent.VC_CONTROL,
+                nativeKey,
                 NativeKeyEvent.CHAR_UNDEFINED,
                 NativeKeyEvent.KEY_LOCATION_UNKNOWN));
     }
 
-    private void mousePress(int x, int y) {
+    private void mousePress(int x, int y, int button) {
         GlobalScreen.postNativeEvent(new NativeMouseEvent(
                 NativeMouseEvent.NATIVE_MOUSE_PRESSED,
                 0,
                 x,
                 y,
                 1,
-                NativeMouseEvent.BUTTON1));
+                button));
     }
 
-    private void mouseRelease(int x, int y) {
+    private void mouseRelease(int x, int y, int button) {
         GlobalScreen.postNativeEvent(new NativeMouseEvent(
                 NativeMouseEvent.NATIVE_MOUSE_RELEASED,
                 0,
                 x,
                 y,
                 1,
-                NativeMouseEvent.BUTTON1));
+                button));
     }
 
     private void mouseMove(int x, int y) {

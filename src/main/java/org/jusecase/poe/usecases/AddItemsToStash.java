@@ -7,6 +7,7 @@ import org.jusecase.poe.gateways.ItemGateway;
 import org.jusecase.poe.gateways.SettingsGateway;
 import org.jusecase.poe.plugins.ImageHashPlugin;
 import org.jusecase.poe.plugins.InputPlugin;
+import org.jusecase.poe.services.ItemTypeService;
 
 import javax.inject.Inject;
 import java.awt.*;
@@ -15,19 +16,18 @@ import java.util.EnumMap;
 import java.util.List;
 
 @Component
-public class AddItemsToStash {
+public class AddItemsToStash implements Usecase {
 
     @Inject
     private InputPlugin inputPlugin;
     @Inject
     private InventorySlotGateway inventorySlotGateway;
     @Inject
-    private ItemGateway itemGateway;
-    @Inject
-    private ImageHashPlugin imageHashPlugin;
-    @Inject
     private SettingsGateway settingsGateway;
+    @Inject
+    private ItemTypeService itemTypeService;
 
+    @Override
     public void execute() {
         EnumMap<ItemType, List<InventorySlot>> slotsByType = getSlotsGroupedByType();
 
@@ -62,22 +62,11 @@ public class AddItemsToStash {
     private EnumMap<ItemType, List<InventorySlot>> getSlotsGroupedByType() {
         EnumMap<ItemType, List<InventorySlot>> slotsByType = new EnumMap<>(ItemType.class);
         for (InventorySlot inventorySlot : inventorySlotGateway.getAll()) {
-            ItemType type = getType(inventorySlot);
+            ItemType type = itemTypeService.getType(inventorySlot);
             if (type != null) {
                 slotsByType.computeIfAbsent(type, itemType -> new ArrayList<>()).add(inventorySlot);
             }
         }
         return slotsByType;
-    }
-
-    private ItemType getType(InventorySlot inventorySlot) {
-        for (Item item : itemGateway.getAll()) {
-            for (Hash imageHash : inventorySlot.imageHashes) {
-                if (imageHashPlugin.isSimilar(imageHash, item.imageHash)) {
-                    return item.type;
-                }
-            }
-        }
-        return null;
     }
 }

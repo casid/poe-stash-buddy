@@ -4,6 +4,7 @@ import org.jusecase.poe.entities.Hash;
 import org.jusecase.poe.plugins.phash.ImageHash;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,20 +18,24 @@ public class ImageHashPlugin {
     private ImageHash imageHash = new ImageHash(SIZE, SMALL_SIZE);
 
     public Hash getHash(InputStream inputStream) throws IOException {
+        return getHash(inputStream, null);
+    }
+
+    public Hash getHash(InputStream inputStream, Color backgroundColor) throws IOException {
         try {
-            return imageHash.getHash(ImageIO.read(inputStream));
+            return imageHash.getHash(ImageIO.read(inputStream), backgroundColor);
         } finally {
             inputStream.close();
         }
     }
 
-    public Hash getHash(BufferedImage image) throws IOException {
-        return imageHash.getHash(image);
+    public Hash getHash(BufferedImage image) {
+        return imageHash.getHash(image, null);
     }
 
     public boolean isSimilar(Hash hash1, Hash hash2) {
         return getNormalizedDistance(hash1.features, hash2.features) < 0.18 &&
-               getNormalizedDistance(hash1.colors, hash2.colors) < 0.18;
+               getNormalizedDistance(hash1.colors, hash2.colors) < 0.2;
     }
 
     public double getNormalizedDistance(String hash1, String hash2) {

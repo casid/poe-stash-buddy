@@ -27,14 +27,14 @@ class ResourceItemGatewayTest implements ComponentTest {
     void currenciesAreLoadedFromResources() {
         List<Item> currencies = gateway.getAll();
 
-        assertThat(currencies.size()).isEqualTo(55 + 1 + 104 + 156 + 11);
+        assertThat(currencies.size()).isEqualTo(55 + 1 + 104 + 2 * 156 + 11);
         assertThat(currencies.get(0).imageHash.features).isNotEmpty();
         assertThat(currencies.get(0).imageHash.colors).isNotEmpty();
         assertThat(currencies.get(0).type).isEqualTo(ItemType.CURRENCY);
         assertThat(currencies.get(55).type).isEqualTo(ItemType.CARD);
         assertThat(currencies.get(55 + 1).type).isEqualTo(ItemType.ESSENCE);
         assertThat(currencies.get(55 + 1 + 104).type).isEqualTo(ItemType.MAP);
-        assertThat(currencies.get(55 + 1 + 104 + 156).type).isEqualTo(ItemType.FRAGMENT);
+        assertThat(currencies.get(55 + 1 + 104 + 2 * 156).type).isEqualTo(ItemType.FRAGMENT);
     }
 
     @Test
@@ -51,5 +51,11 @@ class ResourceItemGatewayTest implements ComponentTest {
             }
         }
         s.assertAll();
+    }
+
+    @Test
+    void scrollOfWisdom() {
+        Item scrollOfWisdom = gateway.getScrollOfWisdom();
+        assertThat(scrollOfWisdom).isNotNull();
     }
 }

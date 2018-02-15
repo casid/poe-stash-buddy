@@ -5,5 +5,8 @@ public interface InputPlugin {
     void waitDefaultTime();
     void waitDefaultTime(int factor);
     void click(int x, int y);
+    void rightClick(int x, int y);
     void clickWithControlPressed(int x, int y);
+    void pressShift();
+    void releaseShift();
 }

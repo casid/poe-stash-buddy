@@ -7,13 +7,16 @@ public class Item {
     public Path path;
     public String image;
     public Hash imageHash;
+    public boolean unidentified;
 
     @Override
     public String toString() {
         return "Item{" +
                 "type=" + type +
+                ", path=" + path +
                 ", image='" + image + '\'' +
-                ", imageHash='" + imageHash + '\'' +
+                ", imageHash=" + imageHash +
+                ", unidentified=" + unidentified +
                 '}';
     }
 }

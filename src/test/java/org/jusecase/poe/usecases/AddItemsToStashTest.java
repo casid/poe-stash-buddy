@@ -11,6 +11,7 @@ import org.jusecase.poe.gateways.InventorySlotGatewayTrainer;
 import org.jusecase.poe.gateways.SettingsGatewayTrainer;
 import org.jusecase.poe.plugins.ImageHashPlugin;
 import org.jusecase.poe.plugins.InputPluginTrainer;
+import org.jusecase.poe.services.ItemTypeService;
 
 import java.awt.*;
 
@@ -35,6 +36,7 @@ class AddItemsToStashTest implements ComponentTest {
     @BeforeEach
     void setUp() {
         givenDependency(new ImageHashPlugin());
+        givenDependency(new ItemTypeService());
 
         itemGatewayTrainer.givenItem(a(item().chaosOrb()));
         itemGatewayTrainer.givenItem(a(item().exaltedOrb()));

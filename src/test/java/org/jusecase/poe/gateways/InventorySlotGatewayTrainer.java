@@ -19,4 +19,14 @@ public class InventorySlotGatewayTrainer implements InventorySlotGateway {
     public List<InventorySlot> getAll() {
         return inventorySlots;
     }
+
+    @Override
+    public List<InventorySlot> getAllUnidentified() {
+        return null;
+    }
+
+    @Override
+    public List<InventorySlot> getIgnored() {
+        return null;
+    }
 }

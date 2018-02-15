@@ -9,4 +9,6 @@ public interface InventorySlotGateway {
     int ROWS = 5;
 
     List<InventorySlot> getAll();
+    List<InventorySlot> getAllUnidentified();
+    List<InventorySlot> getIgnored();
 }

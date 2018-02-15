@@ -52,9 +52,9 @@ public class ImageHash {
         return counter;
     }
 
-    public Hash getHash(BufferedImage img) throws IOException {
+    public Hash getHash(BufferedImage img, Color backgroundColor) {
 
-        img = resize(img, size, size);
+        img = resize(img, size, size, backgroundColor);
 
         double[][] hsv = new double[size][size];
         double[][] bv = new double[size][size];
@@ -84,7 +84,7 @@ public class ImageHash {
         return hash;
     }
 
-    private String getHash(double[][] values) throws IOException {
+    private String getHash(double[][] values) {
         StringBuilder hash = new StringBuilder();
 
         double average = getAverage(values);
@@ -109,14 +109,19 @@ public class ImageHash {
         return total / (double) ((smallerSize * smallerSize) - 1);
     }
 
-    private BufferedImage resize(BufferedImage image, int width, int height) {
+    private BufferedImage resize(BufferedImage image, int width, int height, Color backgroundColor) {
         BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = resizedImage.createGraphics();
         g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         if (image.getColorModel().hasAlpha()) {
-            g.drawImage(background, 0, 0, width, height, null);
+            if (backgroundColor != null) {
+                g.setBackground(backgroundColor);
+                g.clearRect(0, 0, width, height);
+            } else {
+                g.drawImage(background, 0, 0, width, height, null);
+            }
         }
 
         g.drawImage(image, 0, 0, width, height, null);
