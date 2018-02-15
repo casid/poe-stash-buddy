@@ -34,6 +34,7 @@ Values for common resolutions:
 | --- | --- | --- |
 | 3840x2160 | 2546, 1175, 1260, 524 | 3, 3 |
 | 1920x1080 | 1273, 588, 630, 262 | 1, 1 |
+| 3840x1080 | 3191, 588, 632, 263 | 1, 1 |
 
 **Behold:** it's pretty essential to get these values as precisely as possible for the script to work properly.
 
