@@ -34,8 +34,18 @@ public class ImageHashPlugin {
     }
 
     public boolean isSimilar(Hash hash1, Hash hash2) {
-        return getNormalizedDistance(hash1.features, hash2.features) < 0.18 &&
-               getNormalizedDistance(hash1.colors, hash2.colors) < 0.2;
+        return isSimilar(hash1, hash2, false);
+    }
+
+    public boolean isSimilar(Hash hash1, Hash hash2, boolean debug) {
+        double features = getNormalizedDistance(hash1.features, hash2.features);
+        double colors = getNormalizedDistance(hash1.colors, hash2.colors);
+
+        if (debug) {
+            System.out.println("Features: " + features + ", Colors: " + colors);
+        }
+
+        return features < 0.18 && colors < 0.2;
     }
 
     public double getNormalizedDistance(String hash1, String hash2) {

@@ -49,6 +49,11 @@ class ImageHashPluginTest {
     }
 
     @Test
+    void unsimilar_Cartographers() throws IOException {
+        thenImagesAreSimilar("currency/AtlasRadiusWhite.png", "map/musicbox.png", false);
+    }
+
+    @Test
     void similarity_jewellers() throws IOException {
         thenImagesAreSimilar("inventory-4k-crop-jewellers.png", "currency/CurrencyRerollSocketNumbers.png", true);
     }

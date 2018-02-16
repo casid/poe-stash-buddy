@@ -70,6 +70,11 @@ public class ImageHash {
 
                 Color.RGBtoHSB(r, g, b, hsb);
 
+                // Prevent "bouncing" red hue values to 1.
+                if (hsb[0] > 0.98) {
+                    hsb[0] = 1.0f - hsb[0];
+                }
+
                 hsv[x][y] = hsb[0] * hsb[1] * hsb[2];
                 bv[x][y] = hsb[2];
             }

@@ -11,6 +11,7 @@ import org.jusecase.poe.entities.InventorySlot;
 import org.jusecase.poe.entities.Settings;
 import org.jusecase.poe.plugins.ImageCapturePluginTrainer;
 import org.jusecase.poe.plugins.ImageHashPlugin;
+import org.jusecase.poe.services.ItemTypeService;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -28,6 +29,7 @@ class CapturedInventorySlotGatewayTest implements ComponentTest {
     ImageHashPlugin imageHashPlugin;
     ItemGateway itemGateway;
     CapturedInventorySlotGateway gateway;
+    ItemTypeService itemTypeService;
 
     List<InventorySlot> inventorySlots;
 
@@ -36,6 +38,7 @@ class CapturedInventorySlotGatewayTest implements ComponentTest {
         givenDependency(imageHashPlugin = new ImageHashPlugin());
         givenDependency(itemGateway = new ResourceItemGateway());
         gateway = new CapturedInventorySlotGateway();
+        itemTypeService = new ItemTypeService();
 
         imageCapturePluginTrainer.givenImage("inventory-4k-crop-exact.png");
         gateway.setInventoryArea(new Rectangle(2000, 1000, 1260, 522));
@@ -100,6 +103,20 @@ class CapturedInventorySlotGatewayTest implements ComponentTest {
     }
 
     @Test
+    void essence() {
+        imageCapturePluginTrainer.givenImage("inventory-4k-crop-exact-essence.png");
+        gateway.setInventoryArea(new Rectangle(2000, 1000, 1260, 524));
+        itemTypeService.setDebug(true);
+
+        whenGetAllInventorySlots();
+
+        thenSlotContainsCurrency(0, true);
+        thenSlotContainsCurrency(13, true);
+        thenSlotContainsCurrency(14, true);
+        thenSlotContainsCurrency(19, true);
+    }
+
+    @Test
     void smallerResolution() {
         imageCapturePluginTrainer.givenImage("inventory-2k-crop-exact.png");
         gateway.setInventoryArea(new Rectangle(0, 0, 631, 261));
@@ -136,14 +153,7 @@ class CapturedInventorySlotGatewayTest implements ComponentTest {
     }
 
     private Item getMatchingCurrency(InventorySlot slot) {
-        for (Item item : itemGateway.getAll()) {
-            for (Hash imageHash : slot.imageHashes) {
-                if (imageHashPlugin.isSimilar(imageHash, item.imageHash)) {
-                    return item;
-                }
-            }
-        }
-        return null;
+        return itemTypeService.getMatchingItem(slot);
     }
 
     private void whenGetAllInventorySlots() {

@@ -165,9 +165,9 @@ public class CapturedInventorySlotGateway implements InventorySlotGateway {
 
         @Override
         public void process(InventorySlot slot, BufferedImage inventoryImage, int slotWidth, int slotHeight) {
-            for (int x = -1; x <= 1; ++x) {
-                for (int y = -1; y <= 1; ++y) {
-                    slot.imageHashes.add(getHash(inventoryImage, slot.x + x * slotOffsetX, slot.y + y * slotOffsetY, slotWidth, slotHeight));
+            for (int x = -slotOffsetX; x <= slotOffsetX; ++x) {
+                for (int y = -slotOffsetY; y <= slotOffsetY; ++y) {
+                    slot.imageHashes.add(getHash(inventoryImage, slot.x + x, slot.y + y, slotWidth, slotHeight));
                 }
             }
         }

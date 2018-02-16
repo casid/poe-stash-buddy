@@ -18,14 +18,32 @@ public class ItemTypeService {
     @Inject
     private ImageHashPlugin imageHashPlugin;
 
+    private boolean debug;
+
     public ItemType getType(InventorySlot inventorySlot) {
+        Item item = getMatchingItem(inventorySlot);
+        if (item != null) {
+            return item.type;
+        }
+        return null;
+    }
+
+    public Item getMatchingItem(InventorySlot inventorySlot) {
         for (Item item : itemGateway.getAll()) {
+            if (debug) {
+                System.out.println("Testing item " + item);
+            }
+
             for (Hash imageHash : inventorySlot.imageHashes) {
-                if (imageHashPlugin.isSimilar(imageHash, item.imageHash)) {
-                    return item.type;
+                if (imageHashPlugin.isSimilar(imageHash, item.imageHash, debug)) {
+                    return item;
                 }
             }
         }
         return null;
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
     }
 }
