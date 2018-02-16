@@ -34,18 +34,24 @@ public class ImageHashPlugin {
     }
 
     public boolean isSimilar(Hash hash1, Hash hash2) {
-        return isSimilar(hash1, hash2, false);
+        double features = getNormalizedDistance(hash1.features, hash2.features);
+        double colors1 = getNormalizedDistance(hash1.colors1, hash2.colors1);
+        double colors2 = getNormalizedDistance(hash1.colors2, hash2.colors2);
+
+        return features < 0.18 && (colors1 < 0.18 || colors2 < 0.18);
     }
 
-    public boolean isSimilar(Hash hash1, Hash hash2, boolean debug) {
-        double features = getNormalizedDistance(hash1.features, hash2.features);
-        double colors = getNormalizedDistance(hash1.colors, hash2.colors);
+    public String describeDistance(Hash hash1, Hash hash2) {
+        String description = "Actual normalized distance is ";
+        description += "f: " + getNormalizedDistance(hash1.features, hash2.features) + ", ";
+        description += "c1: " + getNormalizedDistance(hash1.colors1, hash2.colors1) + ", ";
+        description += "c2: " + getNormalizedDistance(hash1.colors2, hash2.colors2);
 
-        if (debug) {
-            System.out.println("Features: " + features + ", Colors: " + colors);
-        }
+        description += " (absolute distance f:" + getDistance(hash1.features, hash2.features) + ", ";
+        description += "c1:" + getDistance(hash1.colors1, hash2.colors1) + ", ";
+        description += "c2:" + getDistance(hash1.colors2, hash2.colors2) + ")";
 
-        return features < 0.18 && colors < 0.2;
+        return description;
     }
 
     public double getNormalizedDistance(String hash1, String hash2) {

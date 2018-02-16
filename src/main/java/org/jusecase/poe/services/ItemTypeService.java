@@ -35,7 +35,11 @@ public class ItemTypeService {
             }
 
             for (Hash imageHash : inventorySlot.imageHashes) {
-                if (imageHashPlugin.isSimilar(imageHash, item.imageHash, debug)) {
+                if (debug) {
+                    System.out.println(imageHashPlugin.describeDistance(imageHash, item.imageHash));
+                }
+
+                if (imageHashPlugin.isSimilar(imageHash, item.imageHash)) {
                     return item;
                 }
             }

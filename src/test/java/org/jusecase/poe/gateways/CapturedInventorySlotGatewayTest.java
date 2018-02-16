@@ -5,9 +5,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.jusecase.inject.ComponentTest;
 import org.jusecase.inject.Trainer;
-import org.jusecase.poe.entities.Hash;
-import org.jusecase.poe.entities.Item;
 import org.jusecase.poe.entities.InventorySlot;
+import org.jusecase.poe.entities.Item;
 import org.jusecase.poe.entities.Settings;
 import org.jusecase.poe.plugins.ImageCapturePluginTrainer;
 import org.jusecase.poe.plugins.ImageHashPlugin;
@@ -106,7 +105,7 @@ class CapturedInventorySlotGatewayTest implements ComponentTest {
     void essence() {
         imageCapturePluginTrainer.givenImage("inventory-4k-crop-exact-essence.png");
         gateway.setInventoryArea(new Rectangle(2000, 1000, 1260, 524));
-        itemTypeService.setDebug(true);
+        //itemTypeService.setDebug(true);
 
         whenGetAllInventorySlots();
 
@@ -114,6 +113,17 @@ class CapturedInventorySlotGatewayTest implements ComponentTest {
         thenSlotContainsCurrency(13, true);
         thenSlotContainsCurrency(14, true);
         thenSlotContainsCurrency(19, true);
+    }
+
+    @Test
+    void essence_corruption() {
+        imageCapturePluginTrainer.givenImage("inventory-4k-crop-exact-essence-corruption.png");
+        gateway.setInventoryArea(new Rectangle(2000, 1000, 1260, 524));
+        //itemTypeService.setDebug(true);
+
+        whenGetAllInventorySlots();
+
+        thenSlotContainsCurrency(0, true);
     }
 
     @Test

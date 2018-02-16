@@ -56,8 +56,9 @@ public class ImageHash {
 
         img = resize(img, size, size, backgroundColor);
 
-        double[][] hsv = new double[size][size];
-        double[][] bv = new double[size][size];
+        double[][] features = new double[size][size];
+        double[][] colors1 = new double[size][size];
+        double[][] colors2 = new double[size][size];
         float[] hsb = new float[3];
         for (int x = 0; x < size; ++x) {
             for (int y = 0; y < size; ++y) {
@@ -70,23 +71,38 @@ public class ImageHash {
 
                 Color.RGBtoHSB(r, g, b, hsb);
 
-                // Prevent "bouncing" red hue values to 1.
-                if (hsb[0] > 0.98) {
-                    hsb[0] = 1.0f - hsb[0];
-                }
-
-                hsv[x][y] = hsb[0] * hsb[1] * hsb[2];
-                bv[x][y] = hsb[2];
+                colors1[x][y] = calculateColors1(hsb);
+                colors2[x][y] = calculateColors2(hsb);
+                features[x][y] = hsb[2];
             }
         }
 
-        double[][] hsvDct = applyDCT(hsv);
-        double[][] bvDct = applyDCT(bv);
+        double[][] featuresDct = applyDCT(features);
+        double[][] colors1Dct = applyDCT(colors1);
+        double[][] colors2Dct = applyDCT(colors2);
 
         Hash hash = new Hash();
-        hash.features = getHash(bvDct);
-        hash.colors = getHash(hsvDct);
+        hash.features = getHash(featuresDct);
+        hash.colors1 = getHash(colors1Dct);
+        hash.colors2 = getHash(colors2Dct);
         return hash;
+    }
+
+    private float calculateColors1(float[] hsb) {
+        return stretchHue(hsb[0]) * hsb[1];
+    }
+
+    private float calculateColors2(float[] hsb) {
+        float hue = hsb[0] + 0.5f;
+        if (hue > 1.0f) {
+            hue -= 1.0f;
+            hue = Math.max(0.0f, hue);
+        }
+        return stretchHue(hue) * hsb[1];
+    }
+
+    private float stretchHue(float hue) {
+        return 0.8f * hue + 0.2f;
     }
 
     private String getHash(double[][] values) {

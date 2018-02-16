@@ -49,6 +49,11 @@ class ImageHashPluginTest {
     }
 
     @Test
+    void unsimilar_ExaltedShard2() throws IOException {
+        thenImagesAreSimilar("currency/ExaltedShard.png", "map/VaalTemple3.png", false);
+    }
+
+    @Test
     void unsimilar_Cartographers() throws IOException {
         thenImagesAreSimilar("currency/AtlasRadiusWhite.png", "map/musicbox.png", false);
     }
@@ -100,10 +105,7 @@ class ImageHashPluginTest {
                 .describedAs(new Description() {
                     @Override
                     public String value() {
-                        return "Actual normalized distance is f:" + plugin.getNormalizedDistance(hash1.features, hash2.features) +
-                                ", c: " + plugin.getNormalizedDistance(hash1.colors, hash2.colors) +
-                                " (absolute distance f:" + plugin.getDistance(hash1.features, hash2.features) +
-                                " c:" + plugin.getDistance(hash1.colors, hash2.colors) + ")\n" +
+                        return plugin.describeDistance(hash1, hash2) + "\n" +
                                 hash1.toString() + "\n" +
                                 hash2.toString();
                     }

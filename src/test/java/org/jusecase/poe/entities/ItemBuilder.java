@@ -38,7 +38,8 @@ public class ItemBuilder implements Builder<Item>, ItemBuilderMethods<Item, Item
     public ItemBuilder withImageHash(String value) {
         Hash hash = new Hash();
         hash.features = value;
-        hash.colors = value;
+        hash.colors1 = value;
+        hash.colors2 = value;
         entity.imageHash = hash;
         return this;
     }

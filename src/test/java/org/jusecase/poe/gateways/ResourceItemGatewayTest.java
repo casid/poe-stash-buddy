@@ -29,7 +29,8 @@ class ResourceItemGatewayTest implements ComponentTest {
 
         assertThat(currencies.size()).isEqualTo(55 + 1 + 104 + 2 * 156 + 15);
         assertThat(currencies.get(0).imageHash.features).isNotEmpty();
-        assertThat(currencies.get(0).imageHash.colors).isNotEmpty();
+        assertThat(currencies.get(0).imageHash.colors1).isNotEmpty();
+        assertThat(currencies.get(0).imageHash.colors2).isNotEmpty();
         assertThat(currencies.get(0).type).isEqualTo(ItemType.CURRENCY);
         assertThat(currencies.get(55).type).isEqualTo(ItemType.CARD);
         assertThat(currencies.get(55 + 1).type).isEqualTo(ItemType.ESSENCE);
@@ -46,7 +47,12 @@ class ResourceItemGatewayTest implements ComponentTest {
             for (int j = i + 1; j < allItems.size(); ++j) {
                 Item otherItem = allItems.get(j);
                 if (item.type != otherItem.type) {
-                    s.assertThat(imageHashPlugin.isSimilar(item.imageHash, otherItem.imageHash)).describedAs("expecting " + item + " not to be similar to item " + otherItem).isFalse();
+                    String assertDescription = "";
+                    boolean similar = imageHashPlugin.isSimilar(item.imageHash, otherItem.imageHash);
+                    if (similar) {
+                        assertDescription = "expecting " + item + " not to be similar to item " + otherItem + "\n" + imageHashPlugin.describeDistance(item.imageHash, otherItem.imageHash);
+                    }
+                    s.assertThat(similar).describedAs(assertDescription).isFalse();
                 }
             }
         }
