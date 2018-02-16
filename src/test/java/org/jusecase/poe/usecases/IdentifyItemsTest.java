@@ -107,4 +107,14 @@ class IdentifyItemsTest implements ComponentTest {
 
         inputPluginTrainer.thenEventsAre();
     }
+
+    @Test
+    void mapsAreNotIdentified_unlessPlayerSaysSo() {
+        imageCapturePluginTrainer.givenImage("inventory-4k-crop-identify-items-map.png");
+        settingsGatewayTrainer.getSettings().identifyMaps = true;
+
+        usecase.execute();
+
+        inputPluginTrainer.thenEventsContain("click(156, 51)");
+    }
 }

@@ -33,6 +33,7 @@ public class SettingsMenu extends JFrame {
     private JTextField slotOffsetX;
     private JTextField slotOffsetY;
     private JTextField inputDelayMillis;
+    private JCheckBox identifyMaps;
     private EnumMap<ItemType, StashTabLocation> stashTabLocations = new EnumMap<>(ItemType.class);
 
     public SettingsMenu() {
@@ -64,18 +65,19 @@ public class SettingsMenu extends JFrame {
         initStashTabLocations();
         initIgnoredSlots();
         initInputDelay();
+        initIdentifyMaps();
 
         add(fields);
-        SpringUtilities.makeCompactGrid(fields, 3 + stashTabLocations.size() + 1 + 1, 2, 10, 10, 10, 10);
+        SpringUtilities.makeCompactGrid(fields, 3 + stashTabLocations.size() + 1 + 1 + 1, 2, 10, 10, 10, 10);
     }
 
     private void initHotkey() {
-        JLabel label = new JLabel("Hotkey", JLabel.RIGHT);
+        JLabel label = new JLabel("Hotkeys", JLabel.RIGHT);
         label.setMaximumSize(new Dimension(label.getMinimumSize().width, label.getMinimumSize().height));
         fields.add(label);
 
-        JLabel hotkey = new JLabel("Ctrl + Shift + A", JLabel.LEFT);
-        hotkey.setMaximumSize(new Dimension(hotkey.getMinimumSize().width, hotkey.getMinimumSize().height));
+        JLabel hotkey = new JLabel("<html>Add currency to stash: <b>Ctrl + Shift + A</b><br/>Identify items: <b>Ctrl + Shift + V</b></html>", JLabel.LEFT);
+        hotkey.setMaximumSize(new Dimension(hotkey.getMinimumSize().width, 4 * hotkey.getMinimumSize().height));
         fields.add(hotkey);
     }
 
@@ -165,6 +167,15 @@ public class SettingsMenu extends JFrame {
         fields.add(inputDelayMillis);
     }
 
+    private void initIdentifyMaps() {
+        JLabel label = new JLabel("Identify maps", JLabel.RIGHT);
+        label.setMaximumSize(new Dimension(label.getMinimumSize().width, label.getMinimumSize().height));
+        fields.add(label);
+
+        identifyMaps = new JCheckBox(null, null, settings.identifyMaps);
+        fields.add(identifyMaps);
+    }
+
     private void updateSlotColor(JPanel slot, int slotIndex) {
         if (settings.ignoredSlots.contains(slotIndex)) {
             slot.setBackground(Color.RED);
@@ -204,6 +215,7 @@ public class SettingsMenu extends JFrame {
         settings.slotOffsetY = parseInt(slotOffsetY);
         stashTabLocations.values().forEach(StashTabLocation::applyToSettings);
         settings.inputDelayMillis = parseInt(inputDelayMillis);
+        settings.identifyMaps = identifyMaps.isSelected();
         new SaveSettings().execute(settings);
     }
 

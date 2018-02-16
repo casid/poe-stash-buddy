@@ -29,6 +29,8 @@ public class IdentifyItems implements Usecase {
     ImageHashPlugin imageHashPlugin;
     @Inject
     ItemTypeService itemTypeService;
+    @Inject
+    SettingsGateway settingsGateway;
 
     @Override
     public void execute() {
@@ -53,7 +55,12 @@ public class IdentifyItems implements Usecase {
     }
 
     private List<InventorySlot> getAllUnidentified() {
-        return inventorySlotGateway.getAllUnidentified().stream().filter(s -> itemTypeService.getType(s) != ItemType.MAP).collect(Collectors.toList());
+        List<InventorySlot> allUnidentified = inventorySlotGateway.getAllUnidentified();
+        if (settingsGateway.getSettings().identifyMaps) {
+            return allUnidentified;
+        }
+
+        return allUnidentified.stream().filter(s -> itemTypeService.getType(s) != ItemType.MAP).collect(Collectors.toList());
     }
 
     private InventorySlot getScrollsOfWisdom() {

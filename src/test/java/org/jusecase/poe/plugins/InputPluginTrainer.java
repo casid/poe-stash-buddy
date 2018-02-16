@@ -76,4 +76,8 @@ public class InputPluginTrainer implements InputPlugin {
     public void thenEventsAre(String ... expected) {
         assertThat(events).containsExactly(expected);
     }
+
+    public void thenEventsContain(String ... expected) {
+        assertThat(events).contains(expected);
+    }
 }
