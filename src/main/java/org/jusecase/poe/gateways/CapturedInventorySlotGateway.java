@@ -6,14 +6,16 @@ import org.jusecase.poe.entities.InventorySlot;
 import org.jusecase.poe.entities.Settings;
 import org.jusecase.poe.plugins.ImageCapturePlugin;
 import org.jusecase.poe.plugins.ImageHashPlugin;
+import org.jusecase.poe.util.ColorUtil;
+import org.jusecase.poe.util.ImageUtil;
 
 import javax.inject.Inject;
+import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.awt.image.*;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -40,19 +42,31 @@ public class CapturedInventorySlotGateway implements InventorySlotGateway {
     @Override
     public List<InventorySlot> getAllUnidentified() {
         List<InventorySlot> unidentified = new CopyOnWriteArrayList<>();
+        Set<Point> adjacentSlots = ConcurrentHashMap.newKeySet();
 
         List<InventorySlot> all = getAll(new ImageHashSlotProcessor() {
             @Override
             public void process(InventorySlot slot, BufferedImage inventoryImage, int slotWidth, int slotHeight) {
                 super.process(slot, inventoryImage, slotWidth, slotHeight);
 
-                if (isUnidentified(inventoryImage, slot.x, slot.y, slotWidth, slotHeight)) {
-                    unidentified.add(slot);
+                if (!isUnidentified(inventoryImage, slot, slotWidth, slotHeight)) {
+                    return;
                 }
+
+                if (slot.row + 1 < ROWS && isAdjacentSlotBelow(inventoryImage, slot, slotWidth, slotHeight)) {
+                    adjacentSlots.add(new Point(slot.column, slot.row + 1));
+                }
+
+                if (slot.column + 1 < COLS && isAdjacentSlotToTheRight(inventoryImage, slot, slotWidth, slotHeight)) {
+                    adjacentSlots.add(new Point(slot.column + 1, slot.row));
+                }
+
+                unidentified.add(slot);
             }
         }, getIgnoredSlots());
 
         all.removeIf(s -> !unidentified.contains(s));
+        all.removeIf(s -> adjacentSlots.contains(new Point(s.column, s.row)));
 
         return all;
     }
@@ -89,6 +103,8 @@ public class CapturedInventorySlotGateway implements InventorySlotGateway {
                     InventorySlot slot = new InventorySlot();
                     slot.x = (int) Math.round(slotX);
                     slot.y = (int) Math.round(slotY);
+                    slot.column = x;
+                    slot.row = y;
                     slots.add(slot);
                 }
 
@@ -131,8 +147,8 @@ public class CapturedInventorySlotGateway implements InventorySlotGateway {
         }
     }
 
-    private boolean isUnidentified(BufferedImage inventoryImage, int slotX, int slotY, int slotWidth, int slotHeight) {
-        BufferedImage slotImage = inventoryImage.getSubimage(slotX, slotY, slotWidth, slotHeight);
+    private boolean isUnidentified(BufferedImage inventoryImage, InventorySlot slot, int slotWidth, int slotHeight) {
+        BufferedImage slotImage = inventoryImage.getSubimage(slot.x, slot.y, slotWidth, slotHeight);
         return getAmountOfUnidentifiedPixels(slotImage) >= 0.075f;
     }
 
@@ -155,6 +171,46 @@ public class CapturedInventorySlotGateway implements InventorySlotGateway {
         }
 
         return (float) unidentifiedPixels / totalPixels;
+    }
+
+    private boolean isAdjacentSlotBelow(BufferedImage inventoryImage, InventorySlot slot, int slotWidth, int slotHeight) {
+        BufferedImage bottomLine = inventoryImage.getSubimage(slot.x, slot.y + slotHeight - 2 * slotOffsetY, slotWidth, 4 * slotOffsetY);
+
+        bottomLine = ImageUtil.toGrayScale(bottomLine);
+        bottomLine = ImageUtil.toFilteredImage(bottomLine, ImageUtil.SOBEL_HORIZONTAL);
+
+        int edgePixels = 0;
+        for (int y = 1; y < bottomLine.getHeight() - 1; ++y) {
+            for (int x = 0; x < bottomLine.getWidth(); ++x) {
+                int value = bottomLine.getRGB(x, y) & 0xff;
+                if (value > 128) {
+                    ++edgePixels;
+                    break;
+                }
+            }
+        }
+
+        return edgePixels >= bottomLine.getHeight() - 2;
+    }
+
+    private boolean isAdjacentSlotToTheRight(BufferedImage slotImage, InventorySlot slot, int slotWidth, int slotHeight) {
+        BufferedImage rightLine = slotImage.getSubimage(slot.x + slotWidth - slotOffsetX, slot.y, 2 * slotOffsetX, slotHeight);
+
+        rightLine = ImageUtil.toGrayScale(rightLine);
+        rightLine = ImageUtil.toFilteredImage(rightLine, ImageUtil.SOBEL_VERTICAL);
+
+        int edgePixels = 0;
+        for (int x = 1; x < rightLine.getWidth() - 1; ++x) {
+            for (int y = 0; y < rightLine.getHeight(); ++y) {
+                int value = rightLine.getRGB(x, y) & 0xff;
+                if (value > 128) {
+                    ++edgePixels;
+                    break;
+                }
+            }
+        }
+
+        return edgePixels >= rightLine.getWidth() - 2;
     }
 
     private interface SlotProcessor {

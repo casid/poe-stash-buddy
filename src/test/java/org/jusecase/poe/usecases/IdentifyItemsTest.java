@@ -59,33 +59,37 @@ class IdentifyItemsTest implements ComponentTest {
                 "shift pressed",
                 "right click(51, 471)", // right click on scroll of wisdom
                 "click(156, 51)",
-                "click(156, 156)",
-                "click(156, 261)",
-                "click(262, 51)",
-                "click(262, 156)",
-                "click(262, 261)",
                 "click(367, 51)",
-                "click(367, 156)",
-                "click(367, 261)",
-                "click(367, 366)",
-                "click(472, 51)",
-                "click(472, 156)",
-                "click(472, 261)",
-                "click(472, 366)",
+                "click(472, 366)", // edge cannot be detected here, but it's ok if we try to identify again in this case
                 "click(577, 261)",
-                "click(577, 366)",
-                "click(577, 471)",
-                "click(683, 261)",
-                "click(683, 471)",
                 "click(788, 156)",
-                "click(788, 261)",
-                "click(788, 366)",
-                "click(893, 156)",
-                "click(893, 261)",
-                "click(893, 366)",
                 "click(1209, 261)",
-                "click(1209, 366)",
-                "click(1209, 471)",
+                "shift released" // done, nothing left to identify
+        );
+    }
+
+    @Test
+    void items2() {
+        imageCapturePluginTrainer.givenImages("inventory-4k-crop-identify-items2.png");
+        settingsGatewayTrainer.getSettings().identifyMaps = true;
+
+        usecase.execute();
+
+        inputPluginTrainer.thenEventsAre(
+                "shift pressed",
+                "right click(51, 471)", // right click on scroll of wisdom
+                "click(51, 51)",
+                "click(156, 51)",
+                "click(156, 156)",
+                "click(262, 51)",
+                "click(262, 366)",
+                "click(262, 471)",
+                "click(472, 51)",
+                "click(472, 261)",
+                "click(683, 51)",
+                "click(893, 51)",
+                "click(893, 156)", // edge cannot be detected here, but it's ok if we try to identify again in this case
+                "click(998, 366)", // edge cannot be detected here, but it's ok if we try to identify again in this case
                 "shift released" // done, nothing left to identify
         );
     }

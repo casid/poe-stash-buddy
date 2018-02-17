@@ -1,6 +1,7 @@
 package org.jusecase.poe.plugins.phash;
 
 import org.jusecase.poe.entities.Hash;
+import org.jusecase.poe.util.ColorUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -93,11 +94,7 @@ public class ImageHash {
     }
 
     private float calculateColors2(float[] hsb) {
-        float hue = hsb[0] + 0.5f;
-        if (hue > 1.0f) {
-            hue -= 1.0f;
-            hue = Math.max(0.0f, hue);
-        }
+        float hue = ColorUtil.applyHueOffset(hsb[0], + 0.5f);
         return stretchHue(hue) * hsb[1];
     }
 
