@@ -16,6 +16,13 @@
         <junit.platform.version>1.0.0</junit.platform.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>local-maven-repository</id>
+            <url>file://${basedir}/local-maven-repository</url>
+        </repository>
+    </repositories>
+
     <pluginRepositories>
         <pluginRepository>
             <id>repo.spring.io</id>
@@ -68,8 +75,6 @@
             <groupId>darcula</groupId>
             <artifactId>darcula</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/darcula.jar</systemPath>
         </dependency>
 
         <dependency>
@@ -127,6 +132,29 @@
                         <param>org.jusecase.poe.entities</param>
                     </packages>
                 </configuration>
+            </plugin>
+
+            <!-- install local jars -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.5.1</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>darcula</groupId>
+                            <artifactId>darcula</artifactId>
+                            <version>1.0-SNAPSHOT</version>
+                            <packaging>jar</packaging>
+                            <file>${basedir}/lib/darcula.jar</file>
+                            <localRepositoryPath>${basedir}/local-maven-repository</localRepositoryPath>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- Add generated test source directories -->
