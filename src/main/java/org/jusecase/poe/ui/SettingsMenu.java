@@ -249,10 +249,10 @@ public class SettingsMenu extends JFrame {
             enabled.addActionListener(l -> applyToSettings());
             add(enabled);
 
-            x = new JTextField(5);
+            x = new JTextField("0", 5);
             add(x);
 
-            y = new JTextField(5);
+            y = new JTextField("0", 5);
             add(y);
 
             update();
@@ -264,8 +264,6 @@ public class SettingsMenu extends JFrame {
                 enabled.setSelected(false);
                 x.setEnabled(false);
                 y.setEnabled(false);
-                x.setText("0");
-                y.setText("0");
             } else {
                 enabled.setSelected(true);
                 x.setEnabled(true);
