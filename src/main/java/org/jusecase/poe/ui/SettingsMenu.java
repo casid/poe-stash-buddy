@@ -1,14 +1,12 @@
 package org.jusecase.poe.ui;
 
 import layout.SpringUtilities;
-import org.jusecase.inject.Component;
 import org.jusecase.poe.entities.InventoryProfile;
 import org.jusecase.poe.entities.ItemType;
 import org.jusecase.poe.entities.Settings;
-import org.jusecase.poe.gateways.SettingsGateway;
+import org.jusecase.poe.usecases.LoadSettingsToEdit;
 import org.jusecase.poe.usecases.SaveSettings;
 
-import javax.inject.Inject;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
@@ -19,14 +17,10 @@ import java.util.EnumMap;
 import static org.jusecase.poe.gateways.InventorySlotGateway.COLS;
 import static org.jusecase.poe.gateways.InventorySlotGateway.ROWS;
 
-@Component
 public class SettingsMenu extends JFrame {
 
     private static final Color RED = new Color(0xa03000);
     private static final Color GREEN = new Color(0x80c000);
-
-    @Inject
-    private SettingsGateway settingsGateway;
 
     private Settings settings;
 
@@ -44,13 +38,7 @@ public class SettingsMenu extends JFrame {
 
     public SettingsMenu() {
         super("PoE Stash Buddy");
-
-        settings = settingsGateway.getSettings();
-        if (settings == null) {
-            settings = new Settings();
-        } else {
-            settings = settings.clone();
-        }
+        settings = new LoadSettingsToEdit().execute();
     }
 
     public void init() {

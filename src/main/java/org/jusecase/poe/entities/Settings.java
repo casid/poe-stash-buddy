@@ -36,7 +36,10 @@ public class Settings implements Cloneable {
     public Settings clone() {
         try {
             Settings clone = (Settings) super.clone();
+            clone.inventoryProfiles = new ArrayList<>(inventoryProfiles);
             clone.ignoredSlots = new TreeSet<>(ignoredSlots);
+            clone.enabledStashTabs = enabledStashTabs.clone();
+            clone.stashTabLocations = stashTabLocations.clone();
             return clone;
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
