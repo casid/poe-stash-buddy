@@ -2,10 +2,13 @@ package org.jusecase.poe.entities;
 
 import java.awt.*;
 import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 public class Settings implements Cloneable {
+    public static final int CURRENT_VERSION = 1;
+
     public int inventoryAreaX;
     public int inventoryAreaY;
     public int inventoryAreaWidth;
@@ -14,8 +17,10 @@ public class Settings implements Cloneable {
     public int slotOffsetY;
     public int inputDelayMillis = 30;
     public SortedSet<Integer> ignoredSlots = new TreeSet<>();
+    public EnumSet<ItemType> enabledStashTabs = EnumSet.noneOf(ItemType.class);
     public EnumMap<ItemType, Point> stashTabLocations = new EnumMap<>(ItemType.class);
     public boolean identifyMaps;
+    public int version;
 
     @Override
     public Settings clone() {

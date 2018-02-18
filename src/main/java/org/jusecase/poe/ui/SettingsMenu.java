@@ -249,25 +249,26 @@ public class SettingsMenu extends JFrame {
             enabled.addActionListener(l -> applyToSettings());
             add(enabled);
 
-            x = new JTextField("0", 5);
+            x = new JTextField(5);
             add(x);
 
-            y = new JTextField("0", 5);
+            y = new JTextField(5);
             add(y);
 
             update();
         }
 
         void update() {
+            boolean tabEnabled = settings.enabledStashTabs.contains(type);
+            enabled.setSelected(tabEnabled);
+            x.setEnabled(tabEnabled);
+            y.setEnabled(tabEnabled);
+
             Point location = settings.stashTabLocations.get(type);
             if (location == null) {
-                enabled.setSelected(false);
-                x.setEnabled(false);
-                y.setEnabled(false);
+                x.setText("0");
+                y.setText("0");
             } else {
-                enabled.setSelected(true);
-                x.setEnabled(true);
-                y.setEnabled(true);
                 x.setText("" + location.x);
                 y.setText("" + location.y);
             }
@@ -275,12 +276,15 @@ public class SettingsMenu extends JFrame {
 
         void applyToSettings() {
             if (enabled.isSelected()) {
-                Point point = settings.stashTabLocations.computeIfAbsent(type, t -> new Point());
-                point.x = parseInt(x);
-                point.y = parseInt(y);
+                settings.enabledStashTabs.add(type);
             } else {
-                settings.stashTabLocations.remove(type);
+                settings.enabledStashTabs.remove(type);
             }
+
+            Point point = settings.stashTabLocations.computeIfAbsent(type, t -> new Point());
+            point.x = parseInt(x);
+            point.y = parseInt(y);
+
             update();
         }
     }

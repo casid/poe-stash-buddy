@@ -13,9 +13,13 @@ public class JsonSettingsGateway implements SettingsGateway {
     private final ObjectMapper mapper = new ObjectMapper();
     private Settings settings;
 
+    @SuppressWarnings("unused") // Called by dependency injection framework
     public JsonSettingsGateway() {
-        Path settingsDirectory = Paths.get(System.getProperty("user.home")).toAbsolutePath();
-        file = settingsDirectory.resolve(".poe-stash-buddy").resolve("settings.json");
+        this(Paths.get(System.getProperty("user.home")).toAbsolutePath().resolve(".poe-stash-buddy").resolve("settings.json"));
+    }
+
+    public JsonSettingsGateway(Path file) {
+        this.file = file;
     }
 
     @Override
@@ -23,6 +27,10 @@ public class JsonSettingsGateway implements SettingsGateway {
         if (settings == null) {
             try {
                 settings = mapper.readValue(file.toFile(), Settings.class);
+
+                while (settings.version < Settings.CURRENT_VERSION) {
+                    migrateSettings();
+                }
             } catch (IOException e) {
                 settings = null;
             }
@@ -32,12 +40,24 @@ public class JsonSettingsGateway implements SettingsGateway {
 
     @Override
     public void saveSettings(Settings settings) {
+        this.settings = settings;
+        saveSettings(settings, Settings.CURRENT_VERSION);
+    }
+
+    public void saveSettings(Settings settings, int version) {
         try {
-            this.settings = settings;
+            settings.version = version;
             Files.createDirectories(file.getParent());
             mapper.writeValue(file.toFile(), settings);
         } catch (IOException e) {
             throw new RuntimeException("Failed to store app settings", e);
+        }
+    }
+
+    private void migrateSettings() {
+        if (settings.version == 0) {
+            settings.enabledStashTabs.addAll(settings.stashTabLocations.keySet());
+            settings.version = 1;
         }
     }
 }

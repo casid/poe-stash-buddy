@@ -56,6 +56,10 @@ public class AddItemsToStash implements Usecase {
             return null;
         }
 
+        if (!settings.enabledStashTabs.contains(itemType)) {
+            return null;
+        }
+
         return settings.stashTabLocations.get(itemType);
     }
 

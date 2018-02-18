@@ -37,6 +37,7 @@ public class InputPluginTrainer implements InputPlugin {
 
     @Override
     public void clickWithControlPressed(int x, int y) {
+        events.add("ctrl click(" + x + ", " + y + ")");
         clicksWithControlPressed.add(new Point(x, y));
     }
 

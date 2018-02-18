@@ -48,6 +48,7 @@ class AddItemsToStashTest implements ComponentTest {
         settings.stashTabLocations.put(ItemType.CARD, new Point(3, 4));
         settings.stashTabLocations.put(ItemType.ESSENCE, new Point(5, 6));
         settings.stashTabLocations.put(ItemType.MAP, new Point(7, 8));
+        settings.enabledStashTabs.addAll(settings.stashTabLocations.keySet());
         settingsGatewayTrainer.givenSettings(settings);
 
         usecase = new AddItemsToStash();
@@ -121,16 +122,19 @@ class AddItemsToStashTest implements ComponentTest {
     }
 
     @Test
-    void towSlotsDetected_cardAndCurrency_noStashTabLocationForCards() {
+    void twoSlotsDetected_cardAndCurrency_noStashTabLocationForCards() {
         inventorySlotGatewayTrainer.givenInventorySlots(
                 a(inventorySlot().card().withX(1).withY(1)),
                 a(inventorySlot().chaosOrb().withX(2).withY(2))
         );
-        settings.stashTabLocations.remove(ItemType.CARD);
+        settings.enabledStashTabs.remove(ItemType.CARD);
 
         whenItemsAreAddedToStash();
-        inputPluginTrainer.thenClicked(0, settings.stashTabLocations.get(ItemType.CURRENCY));
-        inputPluginTrainer.thenClickedWithControlPressedAt(0, 2, 2);
+
+        inputPluginTrainer.thenEventsAre(
+                "click(1, 2)",
+                "ctrl click(2, 2)"
+        );
     }
 
     @Test
