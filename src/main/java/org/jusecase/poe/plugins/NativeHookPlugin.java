@@ -30,6 +30,7 @@ public class NativeHookPlugin implements InputPlugin {
 
     public void enable() {
         try {
+            adjustLogging();
             GlobalScreen.registerNativeHook();
         } catch (NativeHookException e) {
             throw new RuntimeException(e);

@@ -15,6 +15,7 @@ import org.jusecase.poe.usecases.AddItemsToStash;
 import org.jusecase.poe.usecases.ApplySettings;
 import org.jusecase.poe.usecases.IdentifyItems;
 import org.jusecase.poe.usecases.Usecase;
+import com.bulenkov.darcula.DarculaLaf;
 
 import javax.inject.Inject;
 import javax.swing.*;
@@ -38,7 +39,7 @@ public class StashBuddy implements Runnable, NativeKeyListener {
             System.exit(1);
         });
 
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        UIManager.setLookAndFeel(new DarculaLaf());
 
         Injector injector = Injector.getInstance();
         injector.add(JsonSettingsGateway.class);
