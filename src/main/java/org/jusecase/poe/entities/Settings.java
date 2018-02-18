@@ -1,20 +1,30 @@
 package org.jusecase.poe.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.awt.*;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.List;
 
+@SuppressWarnings("DeprecatedIsStillUsed")
 public class Settings implements Cloneable {
-    public static final int CURRENT_VERSION = 1;
+    public static final int CURRENT_VERSION = 2;
 
+    @Deprecated // use inventory profiles instead, needs to stay for migration of old json files
     public int inventoryAreaX;
+    @Deprecated // use inventory profiles instead, needs to stay for migration of old json files
     public int inventoryAreaY;
+    @Deprecated // use inventory profiles instead, needs to stay for migration of old json files
     public int inventoryAreaWidth;
+    @Deprecated // use inventory profiles instead, needs to stay for migration of old json files
     public int inventoryAreaHeight;
+    @Deprecated // use inventory profiles instead, needs to stay for migration of old json files
     public int slotOffsetX;
+    @Deprecated // use inventory profiles instead, needs to stay for migration of old json files
     public int slotOffsetY;
+
+    public List<InventoryProfile> inventoryProfiles = new ArrayList<>(2);
+    public int activeInventoryProfileIndex;
     public int inputDelayMillis = 30;
     public SortedSet<Integer> ignoredSlots = new TreeSet<>();
     public EnumSet<ItemType> enabledStashTabs = EnumSet.noneOf(ItemType.class);
@@ -31,5 +41,14 @@ public class Settings implements Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @JsonIgnore
+    public InventoryProfile getActiveInventoryProfile() {
+        if (activeInventoryProfileIndex >= inventoryProfiles.size()) {
+            return null;
+        }
+
+        return inventoryProfiles.get(activeInventoryProfileIndex);
     }
 }

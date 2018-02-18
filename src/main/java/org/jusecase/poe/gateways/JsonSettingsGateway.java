@@ -1,6 +1,7 @@
 package org.jusecase.poe.gateways;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jusecase.poe.entities.InventoryProfile;
 import org.jusecase.poe.entities.Settings;
 
 import java.io.IOException;
@@ -56,8 +57,29 @@ public class JsonSettingsGateway implements SettingsGateway {
 
     private void migrateSettings() {
         if (settings.version == 0) {
-            settings.enabledStashTabs.addAll(settings.stashTabLocations.keySet());
-            settings.version = 1;
+            migrateToVersion1();
+        } else if (settings.version == 1) {
+            migrateToVersion2();
         }
+    }
+
+    private void migrateToVersion1() {
+        settings.enabledStashTabs.addAll(settings.stashTabLocations.keySet());
+        settings.version = 1;
+    }
+
+    @SuppressWarnings("deprecation")
+    private void migrateToVersion2() {
+        InventoryProfile profile = new InventoryProfile();
+        profile.inventoryAreaX = settings.inventoryAreaX;
+        profile.inventoryAreaY = settings.inventoryAreaY;
+        profile.inventoryAreaWidth = settings.inventoryAreaWidth;
+        profile.inventoryAreaHeight = settings.inventoryAreaHeight;
+        profile.slotOffsetX = settings.slotOffsetX;
+        profile.slotOffsetY = settings.slotOffsetY;
+        settings.inventoryProfiles.add(profile);
+        settings.inventoryProfiles.add(new InventoryProfile());
+        settings.activeInventoryProfileIndex = 0;
+        settings.version = 2;
     }
 }

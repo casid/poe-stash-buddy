@@ -2,6 +2,7 @@ package org.jusecase.poe.ui;
 
 import layout.SpringUtilities;
 import org.jusecase.inject.Component;
+import org.jusecase.poe.entities.InventoryProfile;
 import org.jusecase.poe.entities.ItemType;
 import org.jusecase.poe.entities.Settings;
 import org.jusecase.poe.gateways.SettingsGateway;
@@ -10,6 +11,7 @@ import org.jusecase.poe.usecases.SaveSettings;
 import javax.inject.Inject;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ItemEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.EnumMap;
@@ -20,12 +22,16 @@ import static org.jusecase.poe.gateways.InventorySlotGateway.ROWS;
 @Component
 public class SettingsMenu extends JFrame {
 
+    private static final Color RED = new Color(0xa03000);
+    private static final Color GREEN = new Color(0x80c000);
+
     @Inject
     private SettingsGateway settingsGateway;
 
     private Settings settings;
 
     private JPanel fields;
+    private JComboBox<String> inventoryProfile;
     private JTextField inventoryAreaX;
     private JTextField inventoryAreaY;
     private JTextField inventoryAreaWidth;
@@ -60,6 +66,7 @@ public class SettingsMenu extends JFrame {
         fields = new JPanel(new SpringLayout());
 
         initHotkey();
+        initInventoryProfile();
         initInventoryArea();
         initSlotOffset();
         initStashTabLocations();
@@ -68,7 +75,7 @@ public class SettingsMenu extends JFrame {
         initIdentifyMaps();
 
         add(fields);
-        SpringUtilities.makeCompactGrid(fields, 3 + stashTabLocations.size() + 1 + 1 + 1, 2, 10, 10, 10, 10);
+        SpringUtilities.makeCompactGrid(fields, 4 + stashTabLocations.size() + 1 + 1 + 1, 2, 10, 10, 10, 10);
     }
 
     private void initHotkey() {
@@ -87,12 +94,19 @@ public class SettingsMenu extends JFrame {
         fields.add(label);
 
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        slotOffsetX = new JTextField("" + settings.slotOffsetX, 5);
+        slotOffsetX = new JTextField(5);
         panel.add(slotOffsetX);
-        slotOffsetY = new JTextField("" + settings.slotOffsetY, 5);
+        slotOffsetY = new JTextField(5);
         panel.add(slotOffsetY);
         panel.setMaximumSize(new Dimension(panel.getMaximumSize().width, panel.getMinimumSize().height));
         fields.add(panel);
+
+        updateSlotOffsetInputs();
+    }
+
+    private void updateSlotOffsetInputs() {
+        slotOffsetX.setText("" + settings.getActiveInventoryProfile().slotOffsetX);
+        slotOffsetY.setText("" + settings.getActiveInventoryProfile().slotOffsetY);
     }
 
     private void initStashTabLocations() {
@@ -110,22 +124,57 @@ public class SettingsMenu extends JFrame {
         }
     }
 
+    private void initInventoryProfile() {
+        JLabel label = new JLabel("Inventory profile", JLabel.RIGHT);
+        label.setMaximumSize(new Dimension(label.getMinimumSize().width, label.getMinimumSize().height));
+        fields.add(label);
+
+        inventoryProfile = new JComboBox<>();
+        inventoryProfile.addItem("Default");
+        inventoryProfile.addItem("Alternative monitor");
+        inventoryProfile.setSelectedIndex(settings.activeInventoryProfileIndex);
+        inventoryProfile.addItemListener(this::onInventoryProfileChanged);
+        fields.add(inventoryProfile);
+    }
+
+    private void onInventoryProfileChanged(ItemEvent e) {
+        if (e.getStateChange() == ItemEvent.SELECTED) {
+            int selectedIndex = inventoryProfile.getSelectedIndex();
+            while (settings.inventoryProfiles.size() - 1 < selectedIndex) {
+                settings.inventoryProfiles.add(new InventoryProfile());
+            }
+            settings.activeInventoryProfileIndex = selectedIndex;
+
+            updateInventoryAreaInputs();
+            updateSlotOffsetInputs();
+        }
+    }
+
     private void initInventoryArea() {
         JLabel label = new JLabel("Inventory area", JLabel.RIGHT);
         label.setMaximumSize(new Dimension(label.getMinimumSize().width, label.getMinimumSize().height));
         fields.add(label);
 
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        inventoryAreaX = new JTextField("" + settings.inventoryAreaX, 5);
+        inventoryAreaX = new JTextField(5);
         panel.add(inventoryAreaX);
-        inventoryAreaY = new JTextField("" + settings.inventoryAreaY, 5);
+        inventoryAreaY = new JTextField(5);
         panel.add(inventoryAreaY);
-        inventoryAreaWidth = new JTextField("" + settings.inventoryAreaWidth, 5);
+        inventoryAreaWidth = new JTextField(5);
         panel.add(inventoryAreaWidth);
-        inventoryAreaHeight = new JTextField("" + settings.inventoryAreaHeight, 5);
+        inventoryAreaHeight = new JTextField(5);
         panel.add(inventoryAreaHeight);
         panel.setMaximumSize(new Dimension(panel.getMaximumSize().width, panel.getMinimumSize().height));
         fields.add(panel);
+
+        updateInventoryAreaInputs();
+    }
+
+    private void updateInventoryAreaInputs() {
+        inventoryAreaX.setText("" + settings.getActiveInventoryProfile().inventoryAreaX);
+        inventoryAreaY.setText("" + settings.getActiveInventoryProfile().inventoryAreaY);
+        inventoryAreaWidth.setText("" + settings.getActiveInventoryProfile().inventoryAreaWidth);
+        inventoryAreaHeight.setText("" + settings.getActiveInventoryProfile().inventoryAreaHeight);
     }
 
     private void initIgnoredSlots() {
@@ -178,9 +227,9 @@ public class SettingsMenu extends JFrame {
 
     private void updateSlotColor(JPanel slot, int slotIndex) {
         if (settings.ignoredSlots.contains(slotIndex)) {
-            slot.setBackground(Color.RED);
+            slot.setBackground(RED);
         } else {
-            slot.setBackground(Color.GREEN);
+            slot.setBackground(GREEN);
         }
     }
 
@@ -207,12 +256,12 @@ public class SettingsMenu extends JFrame {
     }
 
     private void apply() {
-        settings.inventoryAreaX = parseInt(inventoryAreaX);
-        settings.inventoryAreaY = parseInt(inventoryAreaY);
-        settings.inventoryAreaWidth = parseInt(inventoryAreaWidth);
-        settings.inventoryAreaHeight = parseInt(inventoryAreaHeight);
-        settings.slotOffsetX = parseInt(slotOffsetX);
-        settings.slotOffsetY = parseInt(slotOffsetY);
+        settings.getActiveInventoryProfile().inventoryAreaX = parseInt(inventoryAreaX);
+        settings.getActiveInventoryProfile().inventoryAreaY = parseInt(inventoryAreaY);
+        settings.getActiveInventoryProfile().inventoryAreaWidth = parseInt(inventoryAreaWidth);
+        settings.getActiveInventoryProfile().inventoryAreaHeight = parseInt(inventoryAreaHeight);
+        settings.getActiveInventoryProfile().slotOffsetX = parseInt(slotOffsetX);
+        settings.getActiveInventoryProfile().slotOffsetY = parseInt(slotOffsetY);
         stashTabLocations.values().forEach(StashTabLocation::applyToSettings);
         settings.inputDelayMillis = parseInt(inputDelayMillis);
         settings.identifyMaps = identifyMaps.isSelected();

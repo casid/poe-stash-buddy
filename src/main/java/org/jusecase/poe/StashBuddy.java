@@ -43,6 +43,7 @@ public class StashBuddy implements Runnable, NativeKeyListener {
 
         Injector injector = Injector.getInstance();
         injector.add(JsonSettingsGateway.class);
+        injector.add(SettingsInventoryProfileGateway.class);
         injector.add(ImageHashPlugin.class);
         injector.add(ResourceItemGateway.class);
         injector.add(RobotImageCapturePlugin.class);
