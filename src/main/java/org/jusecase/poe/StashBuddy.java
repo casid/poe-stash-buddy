@@ -116,7 +116,7 @@ public class StashBuddy implements Runnable, NativeKeyListener {
         if ((modifiers & CTRL_MASK) != 0 && (modifiers & SHIFT_MASK) != 0) {
             if (nativeKeyEvent.getKeyCode() == NativeKeyEvent.VC_A) {
                 usecase = new AddItemsToStash();
-            } else if (nativeKeyEvent.getKeyCode() == NativeKeyEvent.VC_V) {
+            } else if (nativeKeyEvent.getKeyCode() == NativeKeyEvent.VC_D) {
                 usecase = new IdentifyItems();
             }
         }

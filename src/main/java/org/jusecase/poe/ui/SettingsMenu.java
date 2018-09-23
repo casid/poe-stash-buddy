@@ -71,7 +71,7 @@ public class SettingsMenu extends JFrame {
         label.setMaximumSize(new Dimension(label.getMinimumSize().width, label.getMinimumSize().height));
         fields.add(label);
 
-        JLabel hotkey = new JLabel("<html>Add currency to stash: <b>Ctrl + Shift + A</b><br/>Identify items: <b>Ctrl + Shift + V</b></html>", JLabel.LEFT);
+        JLabel hotkey = new JLabel("<html>Add currency to stash: <b>Ctrl + Shift + A</b><br/>Identify items: <b>Ctrl + Shift + D</b></html>", JLabel.LEFT);
         hotkey.setMaximumSize(new Dimension(hotkey.getMinimumSize().width, 4 * hotkey.getMinimumSize().height));
         fields.add(hotkey);
     }
